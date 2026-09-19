@@ -38,7 +38,7 @@ function Write-Package([string]$name, [string]$basePath, [System.IO.FileInfo[]]$
     Get-Item -LiteralPath $target | Select-Object Name,Length
 }
 Write-Package "Sentinel-$version-win-x64.zip" $appRoot @(Get-ChildItem -LiteralPath $appRoot -File -Recurse)
-$sourceFiles = @(Get-ChildItem -LiteralPath $projectRoot -File | Where-Object { $_.Name -in @('package.json','pnpm-lock.yaml','index.html','tsconfig.json','vite.config.ts','wrangler.jsonc','NuGet.Config','.gitignore','.gitattributes','LICENSE','README.md','CONTRIBUTING.md','THIRD_PARTY_NOTICES.md','VALIDATION.md') })
+$sourceFiles = @(Get-ChildItem -LiteralPath $projectRoot -File | Where-Object { $_.Name -in @('package.json','pnpm-lock.yaml','pnpm-workspace.yaml','index.html','tsconfig.json','vite.config.ts','wrangler.jsonc','NuGet.Config','.gitignore','.gitattributes','LICENSE','README.md','CONTRIBUTING.md','THIRD_PARTY_NOTICES.md','VALIDATION.md') })
 foreach ($directory in @('public','desktop','web','worker','shared','rules','samples','tests','scripts','installer','migrations','docs','.github')) {
     $sourceFiles += Get-ChildItem -LiteralPath (Join-Path $projectRoot $directory) -File -Recurse | Where-Object { $_.FullName -notmatch '[\\/](bin|obj|private)[\\/]' }
 }

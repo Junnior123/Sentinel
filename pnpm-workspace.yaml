@@ -1,0 +1,5 @@
+# Exact locked native build dependencies; new versions require review.
+allowBuilds:
+  'esbuild@0.25.4 || 0.25.12': true
+  'workerd@1.20251011.0': true
+  'sharp@0.33.5': true
