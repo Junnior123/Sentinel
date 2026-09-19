@@ -1,0 +1,79 @@
+[
+  {
+    "name": "sjrwatson-autoclicker.exe",
+    "sha256": "a3b4634a4f58890931562f6140f10b78aa1f2a656197288e303db8c84b6e4024",
+    "source": "https://github.com/sjrwatson/autoclicker/releases/download/v1.0.0/autoclicker.exe",
+    "version": "v1.0.0",
+    "category": "known"
+  },
+  {
+    "name": "Expertcoderz-EC-Autoclicker.ahk",
+    "sha256": "588765287617f688f3c19f177b7f9777fbb3751f8b4f2ea8f28e0c3258c2aea0",
+    "source": "https://github.com/Expertcoderz/EC-Autoclicker/releases/download/v1.4.1/EC-Autoclicker.ahk",
+    "version": "v1.4.1",
+    "category": "known"
+  },
+  {
+    "name": "Expertcoderz-EC-Autoclicker.exe",
+    "sha256": "92b06ab3e0f83f6190645cd555b63f62c7e5edc84445aeca80c1cd60360a240e",
+    "source": "https://github.com/Expertcoderz/EC-Autoclicker/releases/download/v1.4.1/EC-Autoclicker.exe",
+    "version": "v1.4.1",
+    "category": "known"
+  },
+  {
+    "name": "Expertcoderz-EC-Autoclicker_x64.exe",
+    "sha256": "19583f5e3bce8dee8e1993870f5d13718769fc28b6adb42a5e6f7f5df9cc1162",
+    "source": "https://github.com/Expertcoderz/EC-Autoclicker/releases/download/v1.4.1/EC-Autoclicker_x64.exe",
+    "version": "v1.4.1",
+    "category": "known"
+  },
+  {
+    "name": "meteor-client-0.5.8.jar",
+    "sha256": "090ad8f02273a67eca753ef37ccee2256e4dd3d715501ed75433ec8f57d7c5e9",
+    "source": "https://maven.meteordev.org/releases/meteordevelopment/meteor-client/0.5.8/meteor-client-0.5.8.jar",
+    "version": "0.5.8",
+    "category": "known"
+  },
+  {
+    "name": "advanced-xray-fabric-26.2.0.1.jar",
+    "sha256": "a9f13ce310d1d4947b4b39afa4a1af3d45fec33855712ad95ade8c1d2e55f31e",
+    "source": "https://github.com/AdvancedXRay/XRay-Mod/releases/download/v/26.2.0.1/advanced-xray-fabric-26.2.0.1.jar",
+    "version": "v/26.2.0.1",
+    "category": "known"
+  },
+  {
+    "name": "advanced-xray-neoforge-26.2.0.1.jar",
+    "sha256": "3026b4af6ce41a0330e46526b290951076d2c9f26106074ba0074a18065b8f00",
+    "source": "https://github.com/AdvancedXRay/XRay-Mod/releases/download/v/26.2.0.1/advanced-xray-neoforge-26.2.0.1.jar",
+    "version": "v/26.2.0.1",
+    "category": "known"
+  },
+  {
+    "name": "spectator-xray-1.2.1.zip",
+    "sha256": "d6c325f080da68131508896558d5ea909b4ac4550bb963eabf411200c7f83e43",
+    "source": "https://cdn.modrinth.com/data/u6RWzf7M/versions/uLQMkfCi/%C2%A7b%C2%A7lSpectator%20Xray%20%C2%A77v1.2.1.zip",
+    "version": "1.2.1",
+    "category": "known"
+  },
+  {
+    "name": "freecam-verified.jar",
+    "sha256": "5232a3b226ec38b576fda8b9a1f7cae2ba4d762c7235e69855ca8c58b853b0a8",
+    "source": "https://cdn.modrinth.com/data/XeEZ3fK2/versions/Cg10zLnR/freecam-fabric-1.3.0%2Bmc1.21.jar",
+    "version": "1.3.0+mc1.21.1",
+    "category": "known"
+  },
+  {
+    "name": "xaeros-minimap-verified.jar",
+    "sha256": "2109c24a5044a6bbce5c456292ce34de830ab35602f1940a700b9abc74537482",
+    "source": "https://cdn.modrinth.com/data/1bokaNcj/versions/ZD6hK4GV/xaerominimap-fabric-1.21.1-26.5.0.jar",
+    "version": "fabric-1.21.1-26.5.0",
+    "category": "known"
+  },
+  {
+    "name": "journeymap-verified.jar",
+    "sha256": "a8885efcfacdcf44315ee6f11277c45dada927bf5f399c0649216c482f99a32e",
+    "source": "https://cdn.modrinth.com/data/lfHFW1mp/versions/qmuZAgdA/journeymap-fabric-1.21.1-6.0.8.jar",
+    "version": "1.21.1-6.0.8+fabric",
+    "category": "known"
+  }
+]

@@ -1,0 +1,328 @@
+{
+  "schemaVersion": 1,
+  "version": "2026.09.17-policy.6",
+  "rules": [
+    {
+      "id": "ahk-repeat-click-review",
+      "title": "반복 입력 매크로 치트 의심",
+      "category": "review",
+      "source": "https://www.autohotkey.com/docs/v2/lib/Click.htm",
+      "sha256": [],
+      "allEntries": [],
+      "allStrings": [
+        "Loop",
+        "Click"
+      ],
+      "excludeSha256": [
+        "588765287617f688f3c19f177b7f9777fbb3751f8b4f2ea8f28e0c3258c2aea0"
+      ],
+      "validation": "합성 양성·음성 표본 회귀 검사. 접근성·자동화 스크립트일 수 있어 치트 확정 아님.",
+      "formats": [
+        "text"
+      ]
+    },
+    {
+      "id": "verified-sjrwatson-autoclicker-exe",
+      "deletedNameHints": ["autoclicker","auto-clicker"],
+      "title": "오토클릭·매크로 치트: sjrwatson-autoclicker.exe",
+      "category": "known",
+      "source": "https://github.com/sjrwatson/autoclicker/releases/download/v1.0.0/autoclicker.exe",
+      "sha256": [
+        "a3b4634a4f58890931562f6140f10b78aa1f2a656197288e303db8c84b6e4024"
+      ],
+      "allEntries": [],
+      "allStrings": [],
+      "excludeSha256": [],
+      "validation": "공식 배포처 정적 표본 v1.0.0. 파일 보유만 확인하며 게임에서의 사용은 미확인. 이 서비스에서는 오토클릭·반복 입력 도구를 치트 프로그램으로 분류합니다.",
+      "formats": []
+    },
+    {
+      "id": "verified-expertcoderz-ec-autoclicker-ahk",
+      "title": "오토클릭·매크로 치트: Expertcoderz-EC-Autoclicker.ahk",
+      "category": "known",
+      "source": "https://github.com/Expertcoderz/EC-Autoclicker/releases/download/v1.4.1/EC-Autoclicker.ahk",
+      "sha256": [
+        "588765287617f688f3c19f177b7f9777fbb3751f8b4f2ea8f28e0c3258c2aea0"
+      ],
+      "allEntries": [],
+      "allStrings": [],
+      "excludeSha256": [],
+      "validation": "공식 배포처 정적 표본 v1.4.1. 파일 보유만 확인하며 게임에서의 사용은 미확인. 이 서비스에서는 오토클릭·반복 입력 도구를 치트 프로그램으로 분류합니다.",
+      "formats": []
+    },
+    {
+      "id": "verified-expertcoderz-ec-autoclicker-exe",
+      "title": "오토클릭·매크로 치트: Expertcoderz-EC-Autoclicker.exe",
+      "category": "known",
+      "source": "https://github.com/Expertcoderz/EC-Autoclicker/releases/download/v1.4.1/EC-Autoclicker.exe",
+      "sha256": [
+        "92b06ab3e0f83f6190645cd555b63f62c7e5edc84445aeca80c1cd60360a240e"
+      ],
+      "allEntries": [],
+      "allStrings": [],
+      "excludeSha256": [],
+      "validation": "공식 배포처 정적 표본 v1.4.1. 파일 보유만 확인하며 게임에서의 사용은 미확인. 이 서비스에서는 오토클릭·반복 입력 도구를 치트 프로그램으로 분류합니다.",
+      "formats": []
+    },
+    {
+      "id": "verified-expertcoderz-ec-autoclicker-x64-exe",
+      "title": "오토클릭·매크로 치트: Expertcoderz-EC-Autoclicker_x64.exe",
+      "category": "known",
+      "source": "https://github.com/Expertcoderz/EC-Autoclicker/releases/download/v1.4.1/EC-Autoclicker_x64.exe",
+      "sha256": [
+        "19583f5e3bce8dee8e1993870f5d13718769fc28b6adb42a5e6f7f5df9cc1162"
+      ],
+      "allEntries": [],
+      "allStrings": [],
+      "excludeSha256": [],
+      "validation": "공식 배포처 정적 표본 v1.4.1. 파일 보유만 확인하며 게임에서의 사용은 미확인. 이 서비스에서는 오토클릭·반복 입력 도구를 치트 프로그램으로 분류합니다.",
+      "formats": []
+    },
+    {
+      "id": "verified-meteor-client-0-5-8-jar",
+      "deletedNameHints": ["meteor-client"],
+      "title": "Meteor Client 0.5.8 배포본",
+      "category": "known",
+      "source": "https://maven.meteordev.org/releases/meteordevelopment/meteor-client/0.5.8/meteor-client-0.5.8.jar",
+      "sha256": [
+        "090ad8f02273a67eca753ef37ccee2256e4dd3d715501ed75433ec8f57d7c5e9"
+      ],
+      "allEntries": [],
+      "allStrings": [],
+      "excludeSha256": [],
+      "validation": "공식 배포처 정적 표본 0.5.8. 파일 보유만 확인하며 게임에서의 사용은 미확인.",
+      "formats": []
+    },
+    {
+      "id": "meteor-structure-review",
+      "title": "Meteor 계열 클래스 구조",
+      "category": "review",
+      "source": "https://github.com/MeteorDevelopment/meteor-client",
+      "sha256": [],
+      "allEntries": [
+        "meteordevelopment/meteorclient/MeteorClient.class",
+        "meteordevelopment/meteorclient/systems/modules/combat/KillAura.class"
+      ],
+      "allStrings": [],
+      "excludeSha256": [
+        "090ad8f02273a67eca753ef37ccee2256e4dd3d715501ed75433ec8f57d7c5e9"
+      ],
+      "formats": [
+        "zip",
+        "fabric-jar"
+      ],
+      "validation": "공식 Meteor 0.5.8 배포 JAR의 클래스 경로 확인. 변형 파일은 검토 필요로만 표시."
+    },
+    {
+      "id": "verified-advanced-xray-fabric-26-2-0-1-jar",
+      "deletedNameHints": ["xray","x-ray"],
+      "title": "엑스레이 치트: Advanced XRay advanced-xray-fabric-26.2.0.1.jar",
+      "category": "known",
+      "source": "https://github.com/AdvancedXRay/XRay-Mod/releases/download/v/26.2.0.1/advanced-xray-fabric-26.2.0.1.jar",
+      "sha256": [
+        "a9f13ce310d1d4947b4b39afa4a1af3d45fec33855712ad95ade8c1d2e55f31e"
+      ],
+      "allEntries": [],
+      "allStrings": [],
+      "excludeSha256": [],
+      "formats": [],
+      "validation": "공식 배포 표본 v/26.2.0.1, 배포처 제공 해시 대조. 서버 정책상 엑스레이 치트로 분류. 파일 보유만 확인하며 게임 내 사용은 미확인."
+    },
+    {
+      "id": "verified-advanced-xray-neoforge-26-2-0-1-jar",
+      "title": "엑스레이 치트: Advanced XRay advanced-xray-neoforge-26.2.0.1.jar",
+      "category": "known",
+      "source": "https://github.com/AdvancedXRay/XRay-Mod/releases/download/v/26.2.0.1/advanced-xray-neoforge-26.2.0.1.jar",
+      "sha256": [
+        "3026b4af6ce41a0330e46526b290951076d2c9f26106074ba0074a18065b8f00"
+      ],
+      "allEntries": [],
+      "allStrings": [],
+      "excludeSha256": [],
+      "formats": [],
+      "validation": "공식 배포 표본 v/26.2.0.1, 배포처 제공 해시 대조. 서버 정책상 엑스레이 치트로 분류. 파일 보유만 확인하며 게임 내 사용은 미확인."
+    },
+    {
+      "id": "verified-spectator-xray-1-2-1-zip",
+      "title": "엑스레이 치트: Spectator Xray 리소스팩",
+      "category": "known",
+      "source": "https://cdn.modrinth.com/data/u6RWzf7M/versions/uLQMkfCi/%C2%A7b%C2%A7lSpectator%20Xray%20%C2%A77v1.2.1.zip",
+      "sha256": [
+        "d6c325f080da68131508896558d5ea909b4ac4550bb963eabf411200c7f83e43"
+      ],
+      "allEntries": [],
+      "allStrings": [],
+      "excludeSha256": [],
+      "formats": [],
+      "validation": "공식 배포 표본 1.2.1, 배포처 제공 해시 대조. 서버 정책상 엑스레이 치트로 분류. 파일 보유만 확인하며 게임 내 사용은 미확인."
+    },
+    {
+      "formats": [
+        "resource-pack",
+        "resource-pack-folder"
+      ],
+      "excludeSha256": [
+        "d6c325f080da68131508896558d5ea909b4ac4550bb963eabf411200c7f83e43"
+      ],
+      "allStrings": [],
+      "category": "known",
+      "allEntries": [],
+      "source": "https://modrinth.com/resourcepack/x-ray/version/uLQMkfCi",
+      "id": "spectator-xray-content",
+      "entrySha256": {
+        "assets/minecraft/models/block/diamond_ore.json": "904bfdbf77653e0a5c60f4b27eade8796eefb563cb18087ab024e1f728d64470",
+        "assets/minecraft/models/block/xray_all.json": "1682cbc792134f8dba756d92a049e9460fb661048406dceb2296e2a9c4182998",
+        "assets/minecraft/models/block/xray.json": "32df8a6d25fb68985a46bad927767cc23e4fa43f0ec3e50acce5b313070be2df"
+      },
+      "validation": "공식 1.2.1 팩의 Xray 모델 3개 해시 조합. ZIP·압축 해제 폴더 정적 표본 검증. 관전자 모드용 팩이며 실제 게임 내 사용 미확인.",
+      "sha256": [],
+      "title": "엑스레이 치트: Spectator Xray 내부 리소스"
+    },
+    {
+      "formats": [],
+      "excludeSha256": [
+        "a9f13ce310d1d4947b4b39afa4a1af3d45fec33855712ad95ade8c1d2e55f31e",
+        "3026b4af6ce41a0330e46526b290951076d2c9f26106074ba0074a18065b8f00"
+      ],
+      "allStrings": [],
+      "category": "review",
+      "allEntries": [
+        "pro/mikey/xray/XRay.class",
+        "pro/mikey/xray/core/ChunkScanTask.class"
+      ],
+      "source": "https://github.com/AdvancedXRay/XRay-Mod",
+      "id": "advanced-xray-structure",
+      "validation": "공식 배포본의 클래스 경로 2개. 변형 파일은 검토 필요.",
+      "sha256": [],
+      "title": "엑스레이 모드 구조 일치"
+    },
+    {
+      "id": "verified-freecam",
+      "deletedNameHints": ["freecam"],
+      "title": "서버 정책상 치트: Freecam 프리캠",
+      "category": "known",
+      "source": "https://modrinth.com/mod/freecam/version/Cg10zLnR",
+      "sha256": [
+        "5232a3b226ec38b576fda8b9a1f7cae2ba4d762c7235e69855ca8c58b853b0a8"
+      ],
+      "allEntries": [],
+      "allStrings": [],
+      "excludeSha256": [],
+      "formats": [],
+      "validation": "공식 1.3.0+mc1.21.1 표본 SHA-512 대조 후 SHA-256 고정. 프리캠·미니맵 금지 정책에 따른 분류이며 악성코드나 게임 내 실제 사용 판정이 아님."
+    },
+    {
+      "id": "verified-xaeros-minimap",
+      "deletedNameHints": ["xaeros-minimap"],
+      "title": "서버 정책상 치트: Xaero's Minimap 미니맵",
+      "category": "known",
+      "source": "https://modrinth.com/mod/xaeros-minimap/version/ZD6hK4GV",
+      "sha256": [
+        "2109c24a5044a6bbce5c456292ce34de830ab35602f1940a700b9abc74537482"
+      ],
+      "allEntries": [],
+      "allStrings": [],
+      "excludeSha256": [],
+      "formats": [],
+      "validation": "공식 fabric-1.21.1-26.5.0 표본 SHA-512 대조 후 SHA-256 고정. 프리캠·미니맵 금지 정책에 따른 분류이며 악성코드나 게임 내 실제 사용 판정이 아님."
+    },
+    {
+      "id": "verified-journeymap",
+      "deletedNameHints": ["journeymap"],
+      "title": "서버 정책상 치트: JourneyMap 미니맵",
+      "category": "known",
+      "source": "https://modrinth.com/mod/journeymap/version/qmuZAgdA",
+      "sha256": [
+        "a8885efcfacdcf44315ee6f11277c45dada927bf5f399c0649216c482f99a32e"
+      ],
+      "allEntries": [],
+      "allStrings": [],
+      "excludeSha256": [],
+      "formats": [],
+      "validation": "공식 1.21.1-6.0.8+fabric 표본 SHA-512 대조 후 SHA-256 고정. 프리캠·미니맵 금지 정책에 따른 분류이며 악성코드나 게임 내 실제 사용 판정이 아님."
+    },
+    {
+      "id": "freecam-structure",
+      "excludeSha256": [
+        "5232a3b226ec38b576fda8b9a1f7cae2ba4d762c7235e69855ca8c58b853b0a8"
+      ],
+      "title": "서버 정책상 치트 의심: Freecam 프리캠",
+      "formats": [],
+      "validation": "공식 표본에서 확인한 클래스 경로 조합. 변경된 파일은 검토 필요로 표시. 서버의 프리캠·미니맵 금지 정책에 따름.",
+      "category": "review",
+      "allEntries": [
+        "net/xolt/freecam/Freecam.class",
+        "net/xolt/freecam/config/ModBindings.class"
+      ],
+      "sha256": [],
+      "allStrings": [],
+      "source": "https://modrinth.com/mod/freecam"
+    },
+    {
+      "id": "xaero-minimap-structure",
+      "excludeSha256": [
+        "2109c24a5044a6bbce5c456292ce34de830ab35602f1940a700b9abc74537482"
+      ],
+      "title": "서버 정책상 치트 의심: Xaero 미니맵",
+      "formats": [],
+      "validation": "공식 표본에서 확인한 클래스 경로 조합. 변경된 파일은 검토 필요로 표시. 서버의 프리캠·미니맵 금지 정책에 따름.",
+      "category": "review",
+      "allEntries": [
+        "xaero/minimap/XaeroMinimap.class",
+        "xaero/common/minimap/render/MinimapRenderer.class"
+      ],
+      "sha256": [],
+      "allStrings": [],
+      "source": "https://modrinth.com/mod/xaeros-minimap"
+    },
+    {
+      "id": "journeymap-structure",
+      "excludeSha256": [
+        "a8885efcfacdcf44315ee6f11277c45dada927bf5f399c0649216c482f99a32e"
+      ],
+      "title": "서버 정책상 치트 의심: JourneyMap 미니맵",
+      "formats": [],
+      "validation": "공식 표본에서 확인한 클래스 경로 조합. 변경된 파일은 검토 필요로 표시. 서버의 프리캠·미니맵 금지 정책에 따름.",
+      "category": "review",
+      "allEntries": [
+        "journeymap/common/Journeymap.class",
+        "journeymap/client/ui/minimap/MiniMap.class"
+      ],
+      "sha256": [],
+      "allStrings": [],
+      "source": "https://modrinth.com/mod/journeymap"
+    },
+    {
+      "id": "meteor-crystal-module",
+      "title": "오토 크리스탈 모듈 구조 (Meteor 계열)",
+      "category": "review",
+      "source": "https://maven.meteordev.org/releases/meteordevelopment/meteor-client/0.5.8/meteor-client-0.5.8.jar",
+      "sha256": [],
+      "allEntries": [
+        "meteordevelopment/meteorclient/systems/modules/combat/CrystalAura.class",
+        "meteordevelopment/meteorclient/systems/modules/combat/CrystalAura$AutoSwitchMode.class"
+      ],
+      "allStrings": [],
+      "excludeSha256": [
+        "090ad8f02273a67eca753ef37ccee2256e4dd3d715501ed75433ec8f57d7c5e9"
+      ],
+      "validation": "공식 Meteor 0.5.8 JAR에서 경로 확인. 재압축 표본 회귀 검사. 구조 일치이며 게임 사용·모듈 활성화는 미확인."
+    },
+    {
+      "id": "meteor-bow-aim-module",
+      "title": "활 조준 보조 모듈 구조 (Meteor 계열)",
+      "category": "review",
+      "source": "https://maven.meteordev.org/releases/meteordevelopment/meteor-client/0.5.8/meteor-client-0.5.8.jar",
+      "sha256": [],
+      "allEntries": [
+        "meteordevelopment/meteorclient/systems/modules/combat/BowAimbot.class",
+        "meteordevelopment/meteorclient/systems/modules/combat/KillAura.class"
+      ],
+      "allStrings": [],
+      "excludeSha256": [
+        "090ad8f02273a67eca753ef37ccee2256e4dd3d715501ed75433ec8f57d7c5e9"
+      ],
+      "validation": "공식 Meteor 0.5.8 JAR에서 경로 확인. 재압축 표본 회귀 검사. 구조 일치이며 게임 사용·모듈 활성화는 미확인."
+    }
+  ]
+}

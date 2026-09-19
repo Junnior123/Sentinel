@@ -1,0 +1,18 @@
+:root{--ui-bg:#141416;--ui-panel:#1c1c1f;--ui-raised:#27272b;--ui-inset:#18181b;--ui-line:#3b3b42;--ui-ink:#f1f1f3;--ui-muted:#b5b5be;--ui-subtle:#9696a0;--ui-accent:#e4e4e9;--ui-accent-ink:#202024;--ui-selected:#34343b;--ui-danger:#f29aa6;--ui-warning:#e0c18c;--ui-danger-bg:#302326;--ui-warning-bg:#302b22;color-scheme:dark}
+:root[data-theme=light]{--ui-bg:#f4f4f5;--ui-panel:#ffffff;--ui-raised:#ececee;--ui-inset:#f8f8f9;--ui-line:#d3d3d8;--ui-ink:#202023;--ui-muted:#56565e;--ui-subtle:#65656e;--ui-accent:#29292e;--ui-accent-ink:#ffffff;--ui-selected:#e4e4e8;--ui-danger:#ad3445;--ui-warning:#85600e;--ui-danger-bg:#fff1f3;--ui-warning-bg:#fbf5e8;color-scheme:light}
+html,body{background:var(--ui-bg);color:var(--ui-ink)}
+button.primary,a.primary{background:var(--ui-accent);border-color:var(--ui-accent);color:var(--ui-accent-ink);box-shadow:none}
+button.primary:hover,a.primary:hover{background:var(--ui-accent);border-color:var(--ui-accent);filter:brightness(.92);box-shadow:none}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline-color:var(--ui-ink)}
+input[type=checkbox]{accent-color:var(--ui-accent)}
+nav .active,.tabs .active,.public-details nav button[aria-pressed=true]{background:var(--ui-selected);border-color:var(--ui-muted);color:var(--ui-ink)}
+.reporthero,.reporthero.detected,.reporthero.warning,.invite-pin,.login{background:var(--ui-panel);border-color:var(--ui-line)}
+.verdict strong,.clear .verdict strong,.login h1 span,.mark{color:var(--ui-ink)}
+.detected .verdict strong,.detected .verdicticon{color:var(--ui-danger)}
+.warning .verdict strong{color:var(--ui-warning)}
+.badge.known,.error{background:var(--ui-danger-bg);color:var(--ui-danger);border-color:var(--ui-danger)}
+.badge.review,.badge.policy{background:var(--ui-warning-bg);color:var(--ui-warning);border-color:var(--ui-warning)}
+header .theme-toggle{margin-left:auto;display:inline-flex;align-items:center;gap:8px;flex-shrink:0;font-size:12px;background:transparent;color:var(--ui-muted);border-color:var(--ui-line)}
+header .account{margin-left:0}header>.theme-toggle:has(+.account){margin-left:auto}
+.invite-download{margin-bottom:12px}
+@media(max-width:580px){header{gap:10px}.theme-toggle span{display:none}header .theme-toggle{padding:8px}.account{gap:6px}.public-report{overflow-wrap:anywhere}header>span:not(.brand){font-size:11px}}

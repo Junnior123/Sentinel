@@ -1,0 +1,34 @@
+{
+  "name": "watchblock",
+  "main": "worker/index.ts",
+  "compatibility_date": "2025-10-08",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": [
+      "/api/*",
+      "/auth/*"
+    ]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "watchblock",
+      "database_id": "REPLACE_WITH_D1_ID",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "vars": {
+    "PUBLIC_ORIGIN": "http://localhost:8787",
+    "OWNER_GITHUB_ID": "",
+    "SERVICE_NAME": "Sentinel",
+    "ADMISSIONS_OPEN": "true",
+    "ENVIRONMENT": "development"
+  },
+  "triggers": {
+    "crons": [
+      "17 * * * *"
+    ]
+  }
+}

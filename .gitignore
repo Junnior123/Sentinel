@@ -1,0 +1,13 @@
+node_modules/
+.tools/
+.wrangler/
+.dev.vars
+dist/
+artifacts/
+**/bin/
+**/obj/
+*.user
+*.log
+samples/private/
+
+wrangler.production.json

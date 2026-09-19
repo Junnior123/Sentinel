@@ -1,0 +1,39 @@
+/* Dense desktop console; the evidence list receives the available space. */
+.finding-row{border-bottom:1px solid var(--line);padding:0 12px}.finding-row summary{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;min-height:52px;cursor:pointer;list-style:none}.finding-row summary::-webkit-details-marker{display:none}.finding-row summary h3{margin:0;font-size:13px}.finding-row summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.finding-row[open]{background:var(--ui-raised)}.finding-row[open]>div,.finding-row[open]>ul{margin:8px 0 12px;overflow-wrap:anywhere}.expand-evidence{font-size:11px;color:var(--muted)}
+header{height:56px;padding:0 22px;gap:16px}.brand{font-size:19px}.mark{font-size:23px;margin-right:7px}.account{font-size:12px;gap:12px}
+.workspace{grid-template-columns:174px minmax(0,1fr);min-height:calc(100vh - 56px)}nav{padding:22px 12px;gap:6px}nav button{font-size:13px;padding:9px 11px}.navfoot{font-size:11px;padding:14px 8px}
+.workspace>main{padding:22px 26px}.heading{margin-bottom:18px}h1{font-size:25px;letter-spacing:-.7px}.heading .eyebrow,.heading p{display:none}h2{font-size:17px}
+button,a.primary{padding:7px 12px;font-size:13px;min-height:34px}button.primary,a.primary{padding:8px 15px;box-shadow:none}.primary:hover{box-shadow:none}
+.panel{padding:16px;margin-bottom:16px;border-radius:8px}.stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:18px;background:var(--surface)}
+.stats>div,.dashboard-open .stats>div{border:0;border-right:1px solid var(--line);border-radius:0;padding:13px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}.stats>div:last-child{border-right:0}.stats>div::before{display:none}.stats strong{font-size:23px;margin:0}.stats span{font-size:12px}
+.tablewrap{padding:0}.listtools,.dashboard-open .listtools{padding:12px 16px;gap:10px}.listtools input{width:220px}.listtools select{width:124px}input:not([type=checkbox]),textarea,select{padding:8px 10px;font-size:13px}.tablewrap th,th{padding:9px 16px}.tablewrap td,td{padding:10px 16px}.badge{font-size:11px;padding:2px 7px}.empty{padding:32px 14px}
+.report-open .detail{min-height:calc(100vh - 100px);padding:18px}.reporthero,.report-open .reporthero{padding:16px 20px;margin:10px 0 14px;gap:20px;grid-template-columns:minmax(0,1fr) auto;border-radius:8px;background:var(--ui-panel)}.reporthero.detected{background:linear-gradient(100deg,var(--ui-panel),var(--ui-danger-bg))}.reporthero.warning{background:linear-gradient(100deg,var(--ui-panel),var(--ui-panel))}
+.reporthero h2{font-size:22px;margin:0 0 10px}.reporthero>.eyebrow,.reporthero .eyebrow,.verdicticon{display:none}.reportmeta{gap:22px}.reportmeta span{display:flex;align-items:center;gap:8px;font-size:11px}.reportmeta b{font-size:12px;margin:0}.verdict{padding-left:22px;align-items:flex-end;gap:7px}.verdict strong{font-size:17px}.verdict small{font-size:11px;max-width:250px}.notice{padding:8px 12px;margin:10px 0;font-size:11px}
+.tabs button{padding:10px 12px;font-size:13px}.pager{padding:8px 0}.report-open .evidence{min-height:160px;max-height:calc(100vh - 625px)}.evidence article{padding:12px 14px}.evidence h3{font-size:14px;margin:2px 0 6px}.evidence p{margin:5px 0}.evidence ul{margin:6px 0;padding-left:20px;font-size:12px}
+.reviewform,.report-open .reviewform{grid-template-columns:150px minmax(0,1fr) auto;align-items:start;margin-top:14px;padding-top:14px;gap:10px}.reviewform h3{display:none}.reviewform textarea{height:38px;min-height:38px;resize:vertical}.reviewform select{margin:0}.reviewform button,.report-open .reviewform button{grid-column:auto}.danger{margin-top:6px}.detail>details.panel{margin:14px 0 8px;padding:12px 14px}.detail>details summary{cursor:pointer;font-size:13px}.detail>details p{font-size:12px;margin:10px 0}.share-options{display:flex;align-items:end;gap:12px;margin:12px 0}.share-options label{max-width:160px}
+.checks{gap:12px;min-height:32px}.checks label{background:none;border:0;padding:0;font-size:12px}.createform{gap:12px}.invite-card{padding:2px}.invite-card h2{font-size:20px}.invite-pin{padding:14px 18px;margin:14px 0;gap:7px}.invite-pin strong{font-size:28px;letter-spacing:3px}.invite-actions{gap:8px;margin-bottom:12px}.invite-card details{margin-top:14px;padding-top:12px}
+.login{max-width:640px;margin:56px auto;padding:32px;background:none;border:1px solid var(--line);border-radius:12px}.login h1{font-size:38px;letter-spacing:-1.5px;margin:16px 0}.login .eyebrow{font-size:10px}.login .primary{margin:12px 0;padding:10px 18px}
+@media(max-width:1100px){.workspace{grid-template-columns:158px minmax(0,1fr)}.workspace>main{padding:18px}.stats>div,.dashboard-open .stats>div{padding:12px}.reportmeta{gap:12px;flex-wrap:wrap}.verdict small{max-width:200px}}
+@media(max-width:900px){.workspace{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stats>div{border-bottom:1px solid var(--line)}.reporthero,.report-open .reporthero{grid-template-columns:1fr}.verdict{padding:10px 0 0;align-items:flex-start;border-left:0;border-top:1px solid var(--line)}.verdict small{max-width:none}.reviewform,.report-open .reviewform{grid-template-columns:130px minmax(0,1fr)}.reviewform button,.report-open .reviewform button{grid-column:2}.report-open .evidence{max-height:440px}.listtools input{width:180px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* Public reports use the same dense evidence layout as the operator workspace. */
+.public-report{max-width:1440px;margin:24px auto;width:calc(100% - 48px);min-height:calc(100vh - 120px)}
+.public-details{margin-top:24px;border-top:1px solid var(--ui-raised)}
+.public-details nav{display:flex;flex-direction:row;flex-wrap:wrap;gap:6px;padding:12px 0;border:0;background:none}
+.public-details nav button{width:auto;flex:0 0 auto}
+.public-report>p{font-size:12px;margin:10px 0;color:var(--ui-muted)}
+.public-details nav button[aria-pressed=true]{background:var(--ui-line);border-color:var(--ui-ink);color:var(--ui-ink)}
+.public-records{min-height:220px;animation:record-enter .22s ease-out}
+.public-record{border:1px solid var(--ui-raised);border-radius:8px;margin-bottom:6px;background:var(--ui-panel)}
+.public-record summary{display:flex;align-items:center;gap:12px;padding:12px;cursor:pointer;min-width:0}
+.public-record summary strong{flex:1;overflow-wrap:anywhere;font-size:13px;font-weight:500}
+.public-record summary>span:last-child{font-size:12px;color:var(--ui-muted);white-space:nowrap}
+.public-evidence{padding:4px 16px 16px 16px;border-top:1px solid var(--ui-raised);overflow-wrap:anywhere;font-size:13px}
+.public-evidence code{white-space:normal;color:var(--ui-ink)}
+.public-pager{display:flex;justify-content:flex-end;align-items:center;gap:12px;margin:16px 0}
+.share-sections{display:flex;flex-wrap:wrap;gap:8px 20px;margin:12px 0}
+.share-sections label{display:flex;align-items:center;gap:8px;font-size:13px}
+@keyframes record-enter{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.public-records{animation:none}}
+@media(max-width:680px){.public-report{width:calc(100% - 20px);margin:10px}.public-record summary{flex-wrap:wrap}.public-record summary strong{flex-basis:65%}}
