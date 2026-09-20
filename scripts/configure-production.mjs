@@ -30,5 +30,5 @@ try {
   writeFileSync(file,JSON.stringify(config,null,2)+'\n');
   mkdirSync('artifacts/production',{recursive:true});
   writeFileSync('artifacts/production/Sentinel.service.json',JSON.stringify({origin},null,2)+'\n');
-  console.log(`설정 저장 완료. OAuth callback: ${origin}/auth/callback\n다음 순서는 docs/DEPLOY.md를 확인하세요.`);
+  console.log(`설정 저장 완료. OAuth callback: ${origin}/auth/callback\n다음 순서는 CONTRIBUTING.md를 확인하세요.`);
 } catch(error){console.error(error.message);process.exitCode=1;} finally {rl.close();}

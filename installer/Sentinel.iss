@@ -37,14 +37,14 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "{#AppSource}\*"; DestDir: "{app}"; Excludes: "*.pdb,Sentinel.service.json,Watchblock.service.json"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#AppSource}\*"; DestDir: "{app}"; Excludes: "*.pdb,docs\*,Sentinel.service.json,Watchblock.service.json"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; Site-specific configuration may be bundled, but an existing operator setting wins.
 Source: "{#AppSource}\Sentinel.service.json"; DestDir: "{app}"; Flags: onlyifdoesntexist skipifsourcedoesntexist uninsneveruninstall
 Source: "{#AppSource}\Watchblock.service.json"; DestDir: "{app}"; Flags: onlyifdoesntexist skipifsourcedoesntexist uninsneveruninstall
 
 [Icons]
 Name: "{group}\Sentinel"; Filename: "{app}\Sentinel.exe"; WorkingDir: "{app}"
-Name: "{group}\Sentinel 시작 안내"; Filename: "{app}\docs\GETTING_STARTED.md"
+Name: "{group}\Sentinel 시작 안내"; Filename: "{app}\README.md"
 Name: "{autodesktop}\Sentinel"; Filename: "{app}\Sentinel.exe"; WorkingDir: "{app}"; Tasks: desktopicon
 
 [Run]

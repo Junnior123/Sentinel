@@ -4,7 +4,7 @@ $projectRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 if (!$Compiler) { $Compiler = Join-Path $projectRoot '.tools/inno/ISCC.exe' }
 if (!(Test-Path -LiteralPath $Compiler)) { throw 'Run scripts/install-inno.ps1 or supply -Compiler with the Inno Setup 6.7.3 ISCC.exe path.' }
 $appRoot = Join-Path $projectRoot 'artifacts/sentinel-app'
-foreach ($required in @('Sentinel.exe','Sentinel.runtimeconfig.json','rules/catalog.json','DOTNET-LICENSE.txt','WPF-LICENSE.txt','docs/GETTING_STARTED.md')) {
+foreach ($required in @('Sentinel.exe','Sentinel.runtimeconfig.json','rules/catalog.json','DOTNET-LICENSE.txt','WPF-LICENSE.txt','README.md')) {
     if (!(Test-Path -LiteralPath (Join-Path $appRoot $required))) { throw "Package input missing: $required. Publish the app and run package.ps1 first." }
 }
 $version = (Get-Content -LiteralPath (Join-Path $projectRoot 'package.json') -Raw | ConvertFrom-Json).version

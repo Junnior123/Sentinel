@@ -18,8 +18,6 @@ foreach ($name in @('LICENSE','README.md','VALIDATION.md','THIRD_PARTY_NOTICES.m
 $desktopLicense = Get-ChildItem (Join-Path $projectRoot '.tools/nuget/microsoft.windowsdesktop.app.runtime.win-x64') -Filter LICENSE -Recurse | Select-Object -First 1
 if (!$desktopLicense) { throw 'Missing WPF runtime license; restore with NuGet.Config first.' }
 Copy-Item -LiteralPath $desktopLicense.FullName -Destination (Join-Path $appRoot 'WPF-LICENSE.txt')
-New-Item -ItemType Directory -Path (Join-Path $appRoot 'docs') -Force | Out-Null
-Get-ChildItem -LiteralPath (Join-Path $projectRoot 'docs') -File | Copy-Item -Destination (Join-Path $appRoot 'docs')
 
 function Write-Package([string]$name, [string]$basePath, [System.IO.FileInfo[]]$files) {
     $target = [IO.Path]::GetFullPath((Join-Path $artifactRoot $name))
@@ -37,9 +35,9 @@ function Write-Package([string]$name, [string]$basePath, [System.IO.FileInfo[]]$
     } finally { $stream.Dispose() }
     Get-Item -LiteralPath $target | Select-Object Name,Length
 }
-Write-Package "Sentinel-$version-win-x64.zip" $appRoot @(Get-ChildItem -LiteralPath $appRoot -File -Recurse)
+Write-Package "Sentinel-$version-win-x64.zip" $appRoot @(Get-ChildItem -LiteralPath $appRoot -File -Recurse | Where-Object { [IO.Path]::GetRelativePath($appRoot, $_.FullName) -notmatch '^docs[\\/]' })
 $sourceFiles = @(Get-ChildItem -LiteralPath $projectRoot -File | Where-Object { $_.Name -in @('package.json','pnpm-lock.yaml','pnpm-workspace.yaml','index.html','tsconfig.json','vite.config.ts','wrangler.jsonc','NuGet.Config','.gitignore','.gitattributes','LICENSE','README.md','CONTRIBUTING.md','THIRD_PARTY_NOTICES.md','VALIDATION.md') })
-foreach ($directory in @('public','desktop','web','worker','shared','rules','samples','tests','scripts','installer','migrations','docs','.github')) {
+foreach ($directory in @('public','desktop','web','worker','shared','rules','samples','tests','scripts','installer','migrations','.github')) {
     $sourceFiles += Get-ChildItem -LiteralPath (Join-Path $projectRoot $directory) -File -Recurse | Where-Object { $_.FullName -notmatch '[\\/](bin|obj|private)[\\/]' }
 }
 Write-Package "Sentinel-$version-source.zip" $projectRoot $sourceFiles
