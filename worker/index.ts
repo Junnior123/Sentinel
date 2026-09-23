@@ -1,5 +1,6 @@
 import {z} from 'zod';
 import {readSharedReport} from './sharing';
+import {isReportSection,readSection} from './sections';
 import {chunkSchema,scopeSchema,summarySchema} from '../shared/contracts';
 export interface Env {DB:D1Database; ASSETS:Fetcher; PUBLIC_ORIGIN:string; OWNER_GITHUB_ID:string; SERVICE_NAME:string; ADMISSIONS_OPEN:string; GITHUB_CLIENT_ID:string; GITHUB_CLIENT_SECRET:string; ENVIRONMENT?:string; DOWNLOAD_URL?:string}
 const now=()=>Math.floor(Date.now()/1000), day=86400;
@@ -38,7 +39,7 @@ async function routes(r:Request,e:Env):Promise<Response>{
   if(r.method==='DELETE'){await e.DB.prepare('DELETE FROM report_shares WHERE scan_id=?').bind(s.id).run();await audit(e,s.owner_id,'revoke-share',s.id);return json({ok:true});}
   if(r.method==='POST'){
    if(!s.finalized)fail(409,'제출이 완료된 보고서만 공유할 수 있습니다.');
-   const b=z.object({publishSummary:z.literal(true),hours:z.number().int().min(1).max(168),sections:z.array(z.enum(['files','findings','artifacts','coverage'])).max(4).default([])}).strict().parse(await body(r,1024));
+   const b=z.object({publishSummary:z.literal(true),hours:z.number().int().min(1).max(168),sections:z.array(z.enum(['findings','artifacts','coverage'])).max(3).default([])}).strict().parse(await body(r,1024));
    const key=token(),expires=Math.min(s.expires,now()+b.hours*3600);
    await e.DB.prepare('INSERT INTO report_shares(scan_id,token_hash,expires,sections) VALUES(?,?,?,?) ON CONFLICT(scan_id) DO UPDATE SET token_hash=excluded.token_hash,expires=excluded.expires,sections=excluded.sections').bind(s.id,await hash(key),expires,JSON.stringify([...new Set(b.sections)])).run();
    await audit(e,s.owner_id,b.sections.length?'publish-details':'publish-summary',s.id);return json({url:e.PUBLIC_ORIGIN+'/#report='+key,expires},201);
@@ -96,6 +97,14 @@ async function routes(r:Request,e:Env):Promise<Response>{
   if(action==='progress'&&player&&r.method==='POST'){
    const b=z.object({stage:z.enum(['scanning','awaiting-submit','cancelled','declined','failed']),count:z.number().int().min(0).max(10000000)}).strict().parse(await body(r,1024));await rate(e,'progress:'+id,60,60);
    const changed=await e.DB.prepare("UPDATE scans SET progress=?,state=? WHERE id=? AND finalized=0 AND state IN ('claimed','scanning','awaiting-submit')").bind(JSON.stringify(b),b.stage,id).run();if(!changed.meta.changes)fail(409,'이미 종료되거나 제출 중인 검사입니다.');return json({ok:true})
+  }
+  if(action.startsWith('sections/')&&!player&&r.method==='GET'){
+   if(!s.finalized)fail(409,'보고서 제출이 완료되지 않았습니다.');
+   const section=action.slice(9),page=url.searchParams.get('page')??'0';
+   if(!isReportSection(section))fail(404,'보고서 항목이 없습니다.');
+   if(!/^\d{1,4}$/.test(page))fail(400,'잘못된 페이지입니다.');
+   const result=await readSection(e.DB,id,section,Number(page));
+   await audit(e,s.owner_id,'view-'+section,id);return json(result);
   }
   const cm=action.match(/^chunks\/(\d+)$/);
   if(cm){const seq=Number(cm[1]);if(seq>1000)fail(400,'잘못된 페이지입니다.');

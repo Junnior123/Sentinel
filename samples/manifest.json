@@ -75,5 +75,60 @@
     "source": "https://cdn.modrinth.com/data/lfHFW1mp/versions/qmuZAgdA/journeymap-fabric-1.21.1-6.0.8.jar",
     "version": "1.21.1-6.0.8+fabric",
     "category": "known"
+  },
+  {
+    "name": "bleachhack-1.20.4.jar",
+    "source": "https://github.com/BleachDev/BleachHack/releases/download/1.2.6/bleachhack-1.20.4.jar",
+    "sha256": "12326e656878f1c09e88f684e10ada335236681e3360a3a9dd094135ce05bec7",
+    "version": "1.2.6",
+    "category": "known"
+  },
+  {
+    "name": "FDPClient-b17.jar",
+    "source": "https://github.com/SkidderMC/FDPClient/releases/download/b17/FDPClient-b17.jar",
+    "sha256": "c5039ce1e3c7d4545dba2683324c48e2168ac8be925e729def0755b55e630a4c",
+    "version": "b17",
+    "category": "known"
+  },
+  {
+    "name": "thunderhack-1.7.jar",
+    "source": "https://github.com/Pan4ur/ThunderHack-Recode/releases/download/latest/thunderhack-1.7.jar",
+    "sha256": "027e6416484838a69da359714ba6e99ade5c06153cc4e5b55901ce7fa20c6e11",
+    "version": "latest",
+    "category": "known"
+  },
+  {
+    "name": "GhostTap-1.8.9-1.0.2.jar",
+    "source": "https://github.com/IcySnex/GhostTap/releases/download/v1.0.2-stable/GhostTap-1.8.9-1.0.2.jar",
+    "sha256": "5980cdec1b9dcaeb9201d4bc18ce8015825012123fb747cae4d2aa219ffeb575",
+    "version": "v1.0.2-stable",
+    "category": "known"
+  },
+  {
+    "name": "Aoko.zip",
+    "source": "https://github.com/naczo5/aoko-client/releases/download/v11.5/Aoko.zip",
+    "sha256": "93dfd7df8c1d3b00d6f9318bcd706b12777a0974f55e87213fd7e5dc9e00d85e",
+    "version": "v11.5",
+    "category": "known",
+    "entries": [
+      {
+        "size": 162893275,
+        "entry": "Aoko.exe",
+        "name": "aoko-v11.5-Aoko.exe",
+        "sha256": "d2c2d6d2c72a3246fd9cad448919c49412f39e7af993c3f2df65b566bdc865f4"
+      },
+      {
+        "size": 7156921,
+        "entry": "bridge.dll",
+        "name": "aoko-v11.5-bridge.dll",
+        "sha256": "99f7a0d8f454a84dbb14a41014f2e35edf3da675ae8e30a8a2beaa51928949e0"
+      },
+      {
+        "size": 7675758,
+        "entry": "bridge_261.dll",
+        "name": "aoko-v11.5-bridge_261.dll",
+        "sha256": "b1510608019ecec6fb3b66d695a6577393660019fe58965b4915a36cf116f892"
+      }
+    ]
   }
 ]

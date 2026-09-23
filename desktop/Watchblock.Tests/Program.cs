@@ -1,5 +1,19 @@
 using System.IO.Compression;using System.Security.Cryptography;using System.Text;using System.Text.Json;using Watchblock.Core;using Watchblock.Windows;
 var root=Path.GetFullPath(args.FirstOrDefault()??".");var dir=Path.Combine(root,"artifacts","fixtures");Directory.CreateDirectory(dir);int assertions=0;
+// Extract only pinned test entries; never run sample binaries or copy bundled runtimes.
+using(var manifest=JsonDocument.Parse(File.ReadAllText(Path.Combine(root,"samples/manifest.json"))))foreach(var fixture in manifest.RootElement.EnumerateArray()){
+ var archive=Path.Combine(root,"samples/private",fixture.GetProperty("name").GetString()!);
+ if(!File.Exists(archive)||!fixture.TryGetProperty("entries",out var entries))continue;
+ using(var source=File.OpenRead(archive))if(Convert.ToHexStringLower(SHA256.HashData(source))!=fixture.GetProperty("sha256").GetString())throw new InvalidDataException("Pinned archive hash mismatch");
+ using var zip=ZipFile.OpenRead(archive);
+ foreach(var item in entries.EnumerateArray()){
+  var name=item.GetProperty("name").GetString()!;if(Path.GetFileName(name)!=name)throw new InvalidDataException("Unsafe fixture name");
+  var entry=zip.GetEntry(item.GetProperty("entry").GetString()!)??throw new InvalidDataException("Missing sample entry");
+  if(entry.Length!=item.GetProperty("size").GetInt64()||entry.Length>Scanner.MaxFile)throw new InvalidDataException("Sample size mismatch");
+  using(var source=entry.Open())if(Convert.ToHexStringLower(SHA256.HashData(source))!=item.GetProperty("sha256").GetString())throw new InvalidDataException("Sample entry hash mismatch");
+  using var input=entry.Open();using var output=File.Create(Path.Combine(root,"samples/private",name));input.CopyTo(output);
+ }
+}
 void Check(bool value,string reason){if(!value)throw new Exception(reason);assertions++;Console.WriteLine("PASS "+reason);}
 void Jar(string name,Dictionary<string,string> entries){using var fs=File.Create(Path.Combine(dir,name));using var zip=new ZipArchive(fs,ZipArchiveMode.Create);foreach(var (path,text) in entries){using var writer=new StreamWriter(zip.CreateEntry(path).Open());writer.Write(text);}}
 for(int i=0;i<100;i++)Jar($"clean-{i}.jar",new(){["fabric.mod.json"]=JsonSerializer.Serialize(new{id="clean"+i,version="1.0",name="Normal fixture"}),["assets/example/lang/en_us.json"]="{}"});
@@ -96,6 +110,12 @@ var concurrent=await new Scanner(rules).ScanAsync([dir],new(AllFiles:true),null,
 string[] FileFacts(ScanReport r)=>r.Chunks.SelectMany(c=>c.Files).Select(f=>$"{f.Path}|{f.Size}|{f.Sha256}|{f.Status}|{f.Format}").Order().ToArray();
 string[] FindingFacts(ScanReport r){var names=r.Chunks.SelectMany(c=>c.Files).ToDictionary(f=>f.Id,f=>f.Path);return r.Chunks.SelectMany(c=>c.Findings).Select(f=>$"{f.RuleId}|{f.Category}|{(f.FileId==null?"":names[f.FileId])}").Order().ToArray();}
 Check(FileFacts(sequential).SequenceEqual(FileFacts(concurrent)),"parallel file scan preserves file hashes, status and inventory");
+var compact=UploadOrder.Prioritize(report,evidenceOnly:true);
+Check(compact.All(c=>c.Files.Count==0),"web upload omits inventory while local report retains it");
+Check(compact.SelectMany(c=>c.Findings).Count()==findings.Length&&report.Chunks.SelectMany(c=>c.Files).Count()==files.Length,"compact upload preserves findings and original local inventory");
+Check(compact.SelectMany(c=>c.Findings).Where(f=>f.FileId!=null).All(f=>f.Evidence.Any(e=>e.StartsWith("파일: "))&&f.Evidence.Any(e=>e.StartsWith("SHA-256: "))),"uploaded findings retain masked path and hash context");
+Check(compact.SelectMany(c=>c.Coverage).Any(c=>c.Collector=="file-analysis"&&c.Status=="partial"),"file errors remain visible without inventory");
+Check(JsonSerializer.Serialize(compact,Json.Options).Length<JsonSerializer.Serialize(report.Chunks,Json.Options).Length/4,"benign inventory fixture upload shrinks by at least 75 percent");
 Check(FindingFacts(sequential).SequenceEqual(FindingFacts(concurrent)),"parallel file scan preserves all findings");
 var peDir=Path.Combine(root,"artifacts/pe-pattern-fixture");Directory.CreateDirectory(peDir);File.Copy(Directory.GetFiles(cleanDir,"*.dll").First(),Path.Combine(peDir,"renamed.dat"),true);
 var peRule=new Rule("pe-test","PE marker regression","review","https://learn.microsoft.com/",[],[],["MZ","PE\0\0"],[],"Synthetic test",["pe"]);
@@ -134,8 +154,23 @@ File.WriteAllText(Path.Combine(root,"artifacts/deletion-fixture.json"),JsonSeria
 var deletionHint=DeletedFiles.NameReview(new("usn","선택폴더1/xray.jar",null,null,"none","내용 없음"),rules);
 Check(deletionHint?.Category=="review"&&deletionHint.FileId==null,"deleted Xray name remains review-only without content or hash");
 Check(DeletedFiles.NameReview(new("usn","선택폴더1/normal.jar",null,null,"none","내용 없음"),rules)==null,"ordinary deleted mod name does not trigger a cheat finding");
+var longFinding=new Finding("long-test",null,"review","fixture",Enumerable.Repeat(new string('한',1024),20).ToArray(),"https://example.com");
+var longReport=new ScanReport(report.Summary,[new([],[],Enumerable.Repeat(longFinding,30).ToList(),[])]);
+var split=UploadOrder.Prioritize(longReport,evidenceOnly:true);
+Check(split.SelectMany(c=>c.Findings).Count()==30&&split.All(c=>JsonSerializer.SerializeToUtf8Bytes(c,Json.Options).Length<=240*1024),"long Korean evidence splits into valid requests without lost findings");
+foreach(var rule in rules.Rules.Where(r=>r.Id is "verified-bleachhack" or "verified-fdpclient" or "verified-ghosttap" or "verified-thunderhack-recode")){
+ var match=Directory.Exists(samples)?Directory.GetFiles(samples,"*.jar").FirstOrDefault(p=>rule.Sha256.Contains(Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(p))))):null;
+ if(match==null)continue;
+ var changedDir=Path.Combine(root,"artifacts/client-variants",rule.Id);Directory.CreateDirectory(changedDir);
+ File.Copy(match,Path.Combine(changedDir,"sodium.jar"),true);File.Copy(match,Path.Combine(changedDir,"appleskin.jar"),true);
+ using(var archive=ZipFile.Open(Path.Combine(changedDir,"appleskin.jar"),ZipArchiveMode.Update)){using var writer=new StreamWriter(archive.CreateEntry("fixture-marker.txt").Open());writer.Write("repacked test");}
+ using(var output=File.Create(Path.Combine(changedDir,"ordinary.jar")))using(var archive=new ZipArchive(output,ZipArchiveMode.Create))foreach(var name in rule.AllEntries){using var entry=archive.CreateEntry(name).Open();entry.Write([0xca,0xfe,0xba,0xbe,0,0,0,61,0,1,0,0,0,0,0,0]);}
+ var variants=await new Scanner(rules).ScanAsync([changedDir],new(ExecutionTraces:false),null,CancellationToken.None);
+ var records=variants.Chunks.SelectMany(c=>c.Files).ToDictionary(f=>f.Id,f=>f.Path);
+ var hits=variants.Chunks.SelectMany(c=>c.Findings).Where(f=>f.RuleId==rule.Id).ToArray();
+ Check(hits.Count(f=>f.Category=="known")==2,rule.Id+" renamed and repacked content identified");
+ Check(!hits.Any(f=>f.Category=="known"&&records[f.FileId!].EndsWith("ordinary.jar")),rule.Id+" matching class names alone never become known cheat");
+}
 Console.WriteLine($"FINAL REGRESSION ASSERTIONS {assertions}");
 await ApiClientChecks.Run(Check);Console.WriteLine($"PRODUCTION ASSERTIONS {assertions}");
 sealed class InlineProgress(Action<ScanProgress> callback):IProgress<ScanProgress>{public void Report(ScanProgress value)=>callback(value);}
-
-

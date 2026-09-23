@@ -1,10 +1,30 @@
 import{test}from'node:test';import assert from'node:assert/strict';import{DatabaseSync}from'node:sqlite';import{readFileSync}from'node:fs';import worker,{hash,type Env}from'../worker/index';
-class SqlD1{db=new DatabaseSync(':memory:');constructor(){this.db.exec(readFileSync(new URL('../migrations/0002_report_shares.sql',import.meta.url),'utf8'));this.db.exec(readFileSync(new URL('../migrations/0001_initial.sql',import.meta.url),'utf8'));this.db.exec(readFileSync(new URL('../migrations/0003_share_details.sql',import.meta.url),'utf8'))}prepare(sql:string){const db=this.db;let values:any[]=[];const stmt={bind(...args:any[]){values=args;return stmt},async first(){return db.prepare(sql).get(...values)||null},async all(){return{results:db.prepare(sql).all(...values)}},async run(){const r=db.prepare(sql).run(...values);return{meta:{changes:Number(r.changes)}}}};return stmt}}
+class SqlD1{db=new DatabaseSync(':memory:');constructor(){this.db.exec(readFileSync(new URL('../migrations/0002_report_shares.sql',import.meta.url),'utf8'));this.db.exec(readFileSync(new URL('../migrations/0001_initial.sql',import.meta.url),'utf8'));this.db.exec(readFileSync(new URL('../migrations/0003_share_details.sql',import.meta.url),'utf8'));this.db.exec(readFileSync(new URL('../migrations/0004_evidence_indexes.sql',import.meta.url),'utf8'))}prepare(sql:string){const db=this.db;let values:any[]=[];const stmt={bind(...args:any[]){values=args;return stmt},async first(){return db.prepare(sql).get(...values)||null},async all(){return{results:db.prepare(sql).all(...values)}},async run(){const r=db.prepare(sql).run(...values);return{meta:{changes:Number(r.changes)}}}};return stmt}}
 async function setup(){const db=new SqlD1();const env={DB:db as any,ENVIRONMENT:'development',PUBLIC_ORIGIN:'http://localhost:8787',OWNER_GITHUB_ID:'1',SERVICE_NAME:'Test',ADMISSIONS_OPEN:'true',GITHUB_CLIENT_ID:'',GITHUB_CLIENT_SECRET:'',ASSETS:{fetch:()=>new Response('UI')}}as unknown as Env;for(const id of ['1','2']){db.db.prepare('INSERT INTO operators VALUES(?,?,?,NULL)').run(id,'operator'+id,'owner');db.db.prepare('INSERT INTO auth_sessions VALUES(?,?,?)').run(await hash('session'+id),id,Math.floor(Date.now()/1000)+1000)}
  const call=async(path:string,method='GET',body?:unknown,auth='operator1')=>{const headers:Record<string,string>={'Content-Type':'application/json',Origin:env.PUBLIC_ORIGIN};if(auth.startsWith('operator'))headers.Cookie='wb_session=session'+auth.slice(8);else if(auth)headers.Authorization='Bearer '+auth;return worker.fetch(new Request(env.PUBLIC_ORIGIN+path,{method,headers,body:body===undefined?undefined:JSON.stringify(body)}),env)};
  const create=async()=>{const r=await call('/api/scans','POST',{nickname:'Tester',reason:'test',scope:{gameFiles:true,extraFolders:false,executionTraces:true,bannedModIds:[]}});assert.equal(r.status,201);return await r.json() as any};return{env,db,call,create};}
 const chunk={files:[],artifacts:[],findings:[],coverage:[{collector:'files',status:'partial',reason:'fixture',inspected:0}]};
 const summary={schemaVersion:1,ruleVersion:'test',completion:'partial',submission:'complete',started:new Date().toISOString(),finished:new Date().toISOString(),files:0,omitted:0,known:0,review:0,policy:0};
+test('section reads paginate evidence, isolate owners and skip inventory-only chunks',async()=>{
+ const {db,call,create}=await setup();const scan=await create();
+ const insert=db.db.prepare('INSERT INTO chunks(scan_id,seq,hash,data,bytes) VALUES(?,?,?,?,?)');
+ db.db.prepare("UPDATE scans SET state='claimed' WHERE id=?").run(scan.id);
+ for(let i=0;i<600;i++)insert.run(scan.id,i,'a'.repeat(64),JSON.stringify({files:[],findings:[],artifacts:[],coverage:[]}),100);
+ const findings=Array.from({length:101},(_,i)=>({ruleId:'fixture-'+i,fileId:null,category:'review',title:'Evidence '+i,evidence:['static fixture'],source:'https://example.com'}));
+ insert.run(scan.id,600,'b'.repeat(64),JSON.stringify({...chunk,findings}),100);
+ const path=`/api/scans/${scan.id}/sections/findings`;
+ assert.equal((await call(path)).status,409);
+ db.db.prepare("UPDATE scans SET finalized=1,state='submitted' WHERE id=?").run(scan.id);
+ assert.equal((await call(path,'GET',undefined,'operator2')).status,404);
+ assert.equal((await call(path+'?page=-1')).status,400);
+ assert.equal((await call(`/api/scans/${scan.id}/sections/files`)).status,404);
+ const first=await(await call(path)).json() as any,second=await(await call(path+'?page=1')).json() as any;
+ assert.equal(first.items.length,100);assert.equal(first.hasMore,true);assert.equal(second.items.length,1);assert.equal(second.hasMore,false);
+ assert.equal(second.items[0].ruleId,'fixture-100');
+ const plan=db.db.prepare("EXPLAIN QUERY PLAN SELECT seq FROM chunks WHERE scan_id=? AND json_array_length(data,'$.findings')>0 ORDER BY seq").all(scan.id);
+ assert.match(JSON.stringify(plan),/chunks_findings/);
+ assert.equal((db.db.prepare("SELECT COUNT(*) AS n FROM audit WHERE action='view-findings'").get() as any).n,2);
+});
 test('production validates origin, blocks missing OAuth and checks database readiness',async()=>{
  const {env,call,db}=await setup();env.ENVIRONMENT='production';
  assert.equal((await call('/api/health')).status,503);
@@ -38,13 +58,13 @@ test('public details are selected explicitly, paginated, masked and revoked with
  const share='/api/scans/'+s.id+'/share';
  const make=async(sections?:string[])=>{const r=await call(share,'POST',{publishSummary:true,hours:24,...(sections?{sections}:{})});assert.equal(r.status,201);return '/api/shared/'+(await r.json() as any).url.split('#report=')[1]};
  const legacy=await make();assert.equal((await call(legacy+'?section=files','GET',undefined,'')).status,403);
- const path=await make(['files','findings','artifacts']);
+ const path=await make(['findings','artifacts']);
  assert.equal((await call(legacy,'GET',undefined,'')).status,404);
  assert.equal((await call(path+'?section=coverage','GET',undefined,'')).status,403);
- assert.equal((await call(path+'?section=files&page=-1','GET',undefined,'')).status,400);
+ assert.equal((await call(path+'?section=findings&page=-1','GET',undefined,'')).status,400);
  assert.equal((await call(path+'?section=files%27','GET',undefined,'')).status,403);
- const first=await(await call(path+'?section=files','GET',undefined,'')).json() as any;assert.equal(first.items.length,100);assert.equal(first.hasMore,true);assert.equal(first.items[0].sha256,'a'.repeat(64));assert.ok(!JSON.stringify(first).includes('private-person'));
- const second=await(await call(path+'?section=files&page=1','GET',undefined,'')).json() as any;assert.equal(second.items.length,1);assert.equal(second.hasMore,false);assert.notEqual(first.items[0].id,second.items[0].id);
+ assert.equal((await call(path+'?section=files','GET',undefined,'')).status,403);
+ assert.equal((await call(share,'POST',{publishSummary:true,hours:24,sections:['files']})).status,400);
  const evidence=await(await call(path+'?section=findings','GET',undefined,'')).json() as any;assert.equal(evidence.items[0].ruleId,'fixture');assert.ok(!JSON.stringify(evidence).includes('PRIVATE-TOKEN'));assert.ok(!JSON.stringify(evidence).includes('private-person'));
  assert.equal((await(await call(path+'?section=artifacts','GET',undefined,'')).json() as any).items[0].source,'recycle-bin');
  await call(share,'DELETE');assert.equal((await call(path+'?section=files','GET',undefined,'')).status,404);

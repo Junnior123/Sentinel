@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "version": "2026.09.17-policy.6",
+  "version": "2026.09.23-clients.7",
   "rules": [
     {
       "id": "ahk-repeat-click-review",
@@ -23,7 +23,10 @@
     },
     {
       "id": "verified-sjrwatson-autoclicker-exe",
-      "deletedNameHints": ["autoclicker","auto-clicker"],
+      "deletedNameHints": [
+        "autoclicker",
+        "auto-clicker"
+      ],
       "title": "오토클릭·매크로 치트: sjrwatson-autoclicker.exe",
       "category": "known",
       "source": "https://github.com/sjrwatson/autoclicker/releases/download/v1.0.0/autoclicker.exe",
@@ -80,7 +83,9 @@
     },
     {
       "id": "verified-meteor-client-0-5-8-jar",
-      "deletedNameHints": ["meteor-client"],
+      "deletedNameHints": [
+        "meteor-client"
+      ],
       "title": "Meteor Client 0.5.8 배포본",
       "category": "known",
       "source": "https://maven.meteordev.org/releases/meteordevelopment/meteor-client/0.5.8/meteor-client-0.5.8.jar",
@@ -115,7 +120,10 @@
     },
     {
       "id": "verified-advanced-xray-fabric-26-2-0-1-jar",
-      "deletedNameHints": ["xray","x-ray"],
+      "deletedNameHints": [
+        "xray",
+        "x-ray"
+      ],
       "title": "엑스레이 치트: Advanced XRay advanced-xray-fabric-26.2.0.1.jar",
       "category": "known",
       "source": "https://github.com/AdvancedXRay/XRay-Mod/releases/download/v/26.2.0.1/advanced-xray-fabric-26.2.0.1.jar",
@@ -198,7 +206,9 @@
     },
     {
       "id": "verified-freecam",
-      "deletedNameHints": ["freecam"],
+      "deletedNameHints": [
+        "freecam"
+      ],
       "title": "서버 정책상 치트: Freecam 프리캠",
       "category": "known",
       "source": "https://modrinth.com/mod/freecam/version/Cg10zLnR",
@@ -213,7 +223,9 @@
     },
     {
       "id": "verified-xaeros-minimap",
-      "deletedNameHints": ["xaeros-minimap"],
+      "deletedNameHints": [
+        "xaeros-minimap"
+      ],
       "title": "서버 정책상 치트: Xaero's Minimap 미니맵",
       "category": "known",
       "source": "https://modrinth.com/mod/xaeros-minimap/version/ZD6hK4GV",
@@ -228,7 +240,9 @@
     },
     {
       "id": "verified-journeymap",
-      "deletedNameHints": ["journeymap"],
+      "deletedNameHints": [
+        "journeymap"
+      ],
       "title": "서버 정책상 치트: JourneyMap 미니맵",
       "category": "known",
       "source": "https://modrinth.com/mod/journeymap/version/qmuZAgdA",
@@ -323,6 +337,115 @@
         "090ad8f02273a67eca753ef37ccee2256e4dd3d715501ed75433ec8f57d7c5e9"
       ],
       "validation": "공식 Meteor 0.5.8 JAR에서 경로 확인. 재압축 표본 회귀 검사. 구조 일치이며 게임 사용·모듈 활성화는 미확인."
+    },
+    {
+      "id": "verified-bleachhack",
+      "title": "BleachHack · 킬오라·오토 크리스탈",
+      "category": "known",
+      "source": "https://github.com/BleachDev/BleachHack",
+      "sha256": [
+        "12326e656878f1c09e88f684e10ada335236681e3360a3a9dd094135ce05bec7"
+      ],
+      "allEntries": [
+        "org/bleachhack/module/mods/CrystalAura.class",
+        "org/bleachhack/BleachHack.class",
+        "org/bleachhack/module/mods/Killaura.class"
+      ],
+      "allStrings": [],
+      "excludeSha256": [],
+      "formats": [],
+      "validation": "공식 배포 1.2.6의 SHA-256 대조. 파일 보유 근거이며 모듈 활성화·게임 내 사용 증거가 아닙니다. 2026-09-23 정적 표본 검증. 메인·전투 모듈 3개 내부 해시 모두 일치 시 재압축도 확인. 경로만 일치하면 검토 필요.",
+      "entrySha256": {
+        "org/bleachhack/module/mods/CrystalAura.class": "2a42505eb5e01fe41e889553adeea870d359a5c7b47e2371d07d077935f2b372",
+        "org/bleachhack/BleachHack.class": "ac790b97e6cfdd8de936774950fda2d71818c9d274611da4f4c254f7aa5eb881",
+        "org/bleachhack/module/mods/Killaura.class": "2d0d83294a978da289a17d1dd6cd6201a7436cb89d572e151d96ba69184b48ee"
+      }
+    },
+    {
+      "id": "verified-fdpclient",
+      "title": "FDPClient · 에임·리치·이동 치트",
+      "category": "known",
+      "source": "https://github.com/SkidderMC/FDPClient",
+      "sha256": [
+        "c5039ce1e3c7d4545dba2683324c48e2168ac8be925e729def0755b55e630a4c"
+      ],
+      "allEntries": [
+        "net/ccbluex/liquidbounce/features/module/modules/combat/Aimbot.class",
+        "net/ccbluex/liquidbounce/FDPClient.class",
+        "net/ccbluex/liquidbounce/features/module/modules/combat/KillAura.class"
+      ],
+      "allStrings": [],
+      "excludeSha256": [],
+      "formats": [],
+      "validation": "공식 배포 b17의 SHA-256 대조. 파일 보유 근거이며 모듈 활성화·게임 내 사용 증거가 아닙니다. 2026-09-23 정적 표본 검증. 메인·전투 모듈 3개 내부 해시 모두 일치 시 재압축도 확인. 경로만 일치하면 검토 필요.",
+      "entrySha256": {
+        "net/ccbluex/liquidbounce/features/module/modules/combat/Aimbot.class": "bf24bb13c4e5b22142d1c27ffccd326bf1bb02a3f537a5aba8e7e27efef896af",
+        "net/ccbluex/liquidbounce/FDPClient.class": "b64378e6f89563072078141af999b3227fe39097924804a82780ec00262ecf3e",
+        "net/ccbluex/liquidbounce/features/module/modules/combat/KillAura.class": "666eb1b180c1230a6e33196e7c29f60235ebf353158bb1778f1ec5ad530a5365"
+      }
+    },
+    {
+      "id": "verified-thunderhack-recode",
+      "title": "ThunderHack · 오토 크리스탈·에임봇",
+      "category": "known",
+      "source": "https://github.com/Pan4ur/ThunderHack-Recode",
+      "sha256": [
+        "027e6416484838a69da359714ba6e99ade5c06153cc4e5b55901ce7fa20c6e11"
+      ],
+      "allEntries": [
+        "thunder/hack/ThunderHack.class",
+        "thunder/hack/features/modules/combat/AutoCrystal.class",
+        "thunder/hack/features/modules/combat/AimBot.class"
+      ],
+      "allStrings": [],
+      "excludeSha256": [],
+      "formats": [],
+      "validation": "공식 배포 latest의 SHA-256 대조. 파일 보유 근거이며 모듈 활성화·게임 내 사용 증거가 아닙니다. 2026-09-23 정적 표본 검증. 메인·전투 모듈 3개 내부 해시 모두 일치 시 재압축도 확인. 경로만 일치하면 검토 필요.",
+      "entrySha256": {
+        "thunder/hack/ThunderHack.class": "b9ee1364f7ffa48f626a03b6bc3790e8a2f7ee9c6bbd991b4776e1935be43320",
+        "thunder/hack/features/modules/combat/AutoCrystal.class": "f44443a4b9d0810d6b1d42084298189ca1859a28593811ad936bfdedb5f66fc1",
+        "thunder/hack/features/modules/combat/AimBot.class": "ca23767330afdfee859e073cdefeaf21752d26ac6169791ae2e61a32eb86879f"
+      }
+    },
+    {
+      "id": "verified-ghosttap",
+      "title": "GhostTap · 내부 오토클릭",
+      "category": "known",
+      "source": "https://github.com/IcySnex/GhostTap",
+      "sha256": [
+        "5980cdec1b9dcaeb9201d4bc18ce8015825012123fb747cae4d2aa219ffeb575"
+      ],
+      "allEntries": [
+        "com/icysnex/ghosttap/GhostTap.class",
+        "com/icysnex/ghosttap/core/click/Clicker.class",
+        "com/icysnex/ghosttap/core/click/Gates.class"
+      ],
+      "allStrings": [],
+      "excludeSha256": [],
+      "formats": [],
+      "validation": "공식 배포 v1.0.2-stable의 SHA-256 대조. 파일 보유 근거이며 모듈 활성화·게임 내 사용 증거가 아닙니다. 2026-09-23 정적 표본 검증. 메인·전투 모듈 3개 내부 해시 모두 일치 시 재압축도 확인. 경로만 일치하면 검토 필요.",
+      "entrySha256": {
+        "com/icysnex/ghosttap/GhostTap.class": "aa2e0fdc5d55793fb4bbe4c495a6656b6e5939d7027363e2d05baabb2af3d85b",
+        "com/icysnex/ghosttap/core/click/Clicker.class": "e32ee8fa1af2c8e7a72e55d45d615b3fe0e6cf0db5f40508e780ee3744b18ee1",
+        "com/icysnex/ghosttap/core/click/Gates.class": "edcf508fb44e60976f7a9d708ff9aa1ceb7b902d5feeaeec42a58ecaa50ac6a1"
+      }
+    },
+    {
+      "id": "verified-aoko-client",
+      "title": "Aoko · 외부 주입형 에임 어시스트·리치",
+      "category": "known",
+      "source": "https://github.com/naczo5/aoko-client",
+      "sha256": [
+        "93dfd7df8c1d3b00d6f9318bcd706b12777a0974f55e87213fd7e5dc9e00d85e",
+        "d2c2d6d2c72a3246fd9cad448919c49412f39e7af993c3f2df65b566bdc865f4",
+        "99f7a0d8f454a84dbb14a41014f2e35edf3da675ae8e30a8a2beaa51928949e0",
+        "b1510608019ecec6fb3b66d695a6577393660019fe58965b4915a36cf116f892"
+      ],
+      "allEntries": [],
+      "allStrings": [],
+      "excludeSha256": [],
+      "formats": [],
+      "validation": "공식 배포 v11.5의 SHA-256 대조. 파일 보유 근거이며 모듈 활성화·게임 내 사용 증거가 아닙니다. 2026-09-23 정적 표본 검증."
     }
   ]
 }

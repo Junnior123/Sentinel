@@ -8,11 +8,11 @@ try {
   for (const fixture of manifest) {
     if (!/^[a-zA-Z0-9_.-]+$/.test(fixture.name) || !fixture.source.startsWith('https://')) throw Error('Invalid fixture manifest');
     const response = await fetch(fixture.source, { signal: AbortSignal.timeout(120000) });
-    if (!response.ok || Number(response.headers.get('content-length')) > 64 * 1024 * 1024) throw Error(`Fixture download rejected: ${fixture.name} (${response.status})`);
+    if (!response.ok || Number(response.headers.get('content-length')) > 96 * 1024 * 1024) throw Error(`Fixture download rejected: ${fixture.name} (${response.status})`);
     const parts = []; let size = 0;
     for await (const part of response.body) {
       size += part.length;
-      if (size > 64 * 1024 * 1024) throw Error('Fixture exceeds 64 MB');
+      if (size > 96 * 1024 * 1024) throw Error('Fixture exceeds 96 MB');
       parts.push(part);
     }
     const bytes = Buffer.concat(parts);

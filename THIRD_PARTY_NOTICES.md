@@ -12,3 +12,5 @@
 Windows 시스템 API는 OS가 제공합니다. 외부 스크린셰어 프로그램의 검사 코드를 복사하거나 실행하지 않습니다. Prefetch 최소 파서는 자체 구현이며 지원 형식을 벗어나면 검사 누락을 기록합니다.
 
 검증용 Meteor, 오토클리커 등은 각 프로젝트의 라이선스가 적용됩니다. 코드·바이너리를 이 프로그램에 포함하지 않으며 출처 URL·검증 해시만 배포합니다. 정상 .NET 표본도 테스트 아티팩트에만 두고 재배포하지 않습니다.
+
+0.6.0의 추가 검증 출처: BleachDev/BleachHack, SkidderMC/FDPClient, Pan4ur/ThunderHack-Recode, IcySnex/GhostTap, naczo5/aoko-client (각 GPL-3.0). 원본 소스나 실행 파일은 포함하지 않고 공식 URL·파일 해시·구조 특징만 규칙으로 배포합니다. 버전과 해시는 `samples/manifest.json`에 고정합니다.
