@@ -5,6 +5,7 @@
 - .NET / WPF: MIT. 배포본에 포함되는 런타임의 LICENSE·ThirdPartyNotices 파일을 보존합니다. https://github.com/dotnet/runtime / https://github.com/dotnet/wpf
 - React / React DOM: MIT. https://github.com/facebook/react
 - Zod: MIT. https://github.com/colinhacks/zod
+- libSQL TypeScript client 0.18.0: MIT. Turso 연결에 사용합니다. https://github.com/tursodatabase/libsql-client-ts
 - Cloudflare Workers SDK / Wrangler: MIT 또는 Apache-2.0. 개발·배포 도구. https://github.com/cloudflare/workers-sdk
 - Inno Setup 6.7.3: 설치·제거 프로그램 생성 도구. 자체 Inno Setup License로 배포되며 MIT가 아닙니다. Setup 설치 폴더에 `INNO-SETUP-LICENSE.txt`를 포함합니다. 공식 배포 파일의 SHA-256을 확인해 빌드합니다. https://github.com/jrsoftware/issrc / https://jrsoftware.org/isdl.php
 - Vite, TypeScript, tsx, Playwright 등 개발 도구는 해당 패키지 라이선스를 따릅니다. 배포 소스에는 패키지 잠금 파일과 설치 절차를 포함합니다.

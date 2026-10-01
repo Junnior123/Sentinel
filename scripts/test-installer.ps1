@@ -16,7 +16,7 @@ $arguments = @('/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/SP-','/LANG=kore
 $app = $null
 try {
     if ((Run-Setup $setup $arguments) -ne 0) { throw 'Fresh installation failed.' }
-    foreach ($file in @('Sentinel.exe','Sentinel.runtimeconfig.json','rules/catalog.json','INNO-SETUP-LICENSE.txt','unins000.exe')) {
+    foreach ($file in @('Sentinel.exe','Sentinel.Core.dll','Sentinel.Windows.dll','Sentinel.runtimeconfig.json','rules/catalog.json','INNO-SETUP-LICENSE.txt','unins000.exe')) {
         if (!(Test-Path -LiteralPath (Join-Path $testRoot $file))) { throw "Installed file missing: $file" }
     }
     if (!(Test-Path -LiteralPath $registration)) { throw 'Windows uninstall entry missing.' }
@@ -26,7 +26,17 @@ try {
     Set-Content -LiteralPath $config -Value '{"origin":"https://example.org"}' -Encoding utf8
     Set-Content -LiteralPath (Join-Path $testRoot 'my-report.json') -Value '{"test":"user owned"}' -Encoding utf8
     $before = (Get-FileHash -LiteralPath $config).Hash
+    foreach ($oldDll in @('Watchblock.Core.dll','Watchblock.Windows.dll')) {
+        Set-Content -LiteralPath (Join-Path $testRoot $oldDll) -Value 'obsolete build fixture' -Encoding utf8
+    }
+    $legacyConfig = Join-Path $testRoot 'Watchblock.service.json'
+    Set-Content -LiteralPath $legacyConfig -Value '{"origin":"https://example.org"}' -Encoding utf8
+    $legacyBefore = (Get-FileHash -LiteralPath $legacyConfig).Hash
     if ((Run-Setup $setup $arguments) -ne 0) { throw 'Reinstallation failed.' }
+    foreach ($oldDll in @('Watchblock.Core.dll','Watchblock.Windows.dll')) {
+        if (Test-Path -LiteralPath (Join-Path $testRoot $oldDll)) { throw "Obsolete library remains: $oldDll" }
+    }
+    if ((Get-FileHash -LiteralPath $legacyConfig).Hash -ne $legacyBefore) { throw 'Legacy server configuration was changed.' }
     if ((Get-FileHash -LiteralPath $config).Hash -ne $before) { throw 'Existing server configuration was overwritten.' }
     $app = Start-Process -FilePath (Join-Path $testRoot 'Sentinel.exe') -WindowStyle Hidden -PassThru
     Start-Sleep -Seconds 3

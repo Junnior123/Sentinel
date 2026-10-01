@@ -1,6 +1,6 @@
 {
   "name": "sentinel",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "private": true,
   "license": "MIT",
   "type": "module",
@@ -11,13 +11,14 @@
     "test:web": "node scripts/web-smoke.mjs && node scripts/invitation-smoke.mjs",
     "build": "tsc --noEmit && vite build",
     "test": "tsx --test tests/*.test.ts && node --test tests/*.test.mjs",
-    "db:local": "wrangler d1 migrations apply watchblock --local",
+    "db:local": "wrangler d1 migrations apply DB --local",
     "deploy": "npm run check:production && npm run build && wrangler deploy --config wrangler.production.json",
     "setup:production": "node scripts/configure-production.mjs",
     "check:production": "node scripts/check-production.mjs",
-    "db:production": "npm run check:production && wrangler d1 migrations apply watchblock --remote --config wrangler.production.json"
+    "db:production": "node scripts/migrate-production.mjs"
   },
   "dependencies": {
+    "@libsql/client": "0.18.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "zod": "3.24.2"
@@ -27,6 +28,7 @@
     "@types/node": "22.13.10",
     "@types/react": "19.0.10",
     "@types/react-dom": "19.0.4",
+    "esbuild-wasm": "0.25.12",
     "playwright": "1.56.0",
     "tsx": "4.19.3",
     "typescript": "5.7.3",

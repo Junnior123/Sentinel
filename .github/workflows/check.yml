@@ -17,8 +17,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - run: pnpm test
-      - run: dotnet run --project desktop/Watchblock.Tests -p:RestoreConfigFile="$PWD/NuGet.Config" -- .
-      - run: dotnet publish desktop/Watchblock.App -c Release -r win-x64 --self-contained true -p:RestoreConfigFile="$PWD/NuGet.Config" -o artifacts/sentinel-app
+      - run: dotnet run --project desktop/Sentinel.Tests -p:RestoreConfigFile="$PWD/NuGet.Config" -- .
+      - run: dotnet publish desktop/Sentinel.App -c Release -r win-x64 --self-contained true -p:RestoreConfigFile="$PWD/NuGet.Config" -o artifacts/sentinel-app
       - run: ./scripts/package.ps1
       - run: ./scripts/install-inno.ps1
       - run: ./scripts/build-installer.ps1

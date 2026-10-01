@@ -10,8 +10,16 @@ export function validateProduction(config) {
   if(!v.SERVICE_NAME?.trim())errors.push('서비스 이름이 필요합니다.');
   if(v.ENVIRONMENT!=='production')errors.push('ENVIRONMENT는 production이어야 합니다.');
   if(!['true','false'].includes(v.ADMISSIONS_OPEN))errors.push('ADMISSIONS_OPEN은 true 또는 false여야 합니다.');
-  const db=config.d1_databases?.find(d=>d.binding==='DB');
-  if(!db||!/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(db.database_id))errors.push('Cloudflare에서 생성한 D1 database_id가 필요합니다.');
+  if(v.DB_PROVIDER==='turso'){
+    try{const dbUrl=new URL(v.TURSO_DATABASE_URL);if(!['https:','libsql:'].includes(dbUrl.protocol)||!dbUrl.hostname.endsWith('.turso.io')||dbUrl.username||dbUrl.password||dbUrl.port||dbUrl.search||dbUrl.hash||!['','/'].includes(dbUrl.pathname))throw new Error();}
+    catch{errors.push('TURSO_DATABASE_URL에 Turso DB 주소가 필요합니다.');}
+  }else{
+    if(v.DB_PROVIDER&&v.DB_PROVIDER!=='d1')errors.push('DB_PROVIDER는 d1 또는 turso여야 합니다.');
+    const db=config.d1_databases?.find(d=>d.binding==='DB');
+    if(!db||!/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(db.database_id))errors.push('Cloudflare에서 생성한 D1 database_id가 필요합니다.');
+  }
+  if(v.TURSO_AUTH_TOKEN)errors.push('TURSO_AUTH_TOKEN은 wrangler secret put으로 등록하세요.');
+  if(v.MAINTENANCE&&!['true','false'].includes(v.MAINTENANCE))errors.push('MAINTENANCE는 true 또는 false여야 합니다.');
   if(v.DOWNLOAD_URL&&!/^https:\/\/github\.com\/[A-Za-z0-9-]+\/[A-Za-z0-9_.-]+\/releases\/download\/[^/?#]+\/Sentinel-[0-9.]+-Setup-x64\.exe$/.test(v.DOWNLOAD_URL))errors.push('다운로드 주소는 GitHub Releases의 Sentinel Setup 파일이어야 합니다.');
   if(v.GITHUB_CLIENT_SECRET||v.GITHUB_CLIENT_ID)errors.push('OAuth 자격 증명은 config가 아닌 wrangler secret put으로 등록하세요.');
   return errors;

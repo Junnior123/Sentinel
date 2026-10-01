@@ -4,13 +4,13 @@
 
 ## 빌드와 배포
 
-GitHub Actions의 `Build and test`가 Windows 앱과 Setup을 빌드하고 설치·제거를 검사합니다. 로컬에서는 `dotnet publish desktop/Watchblock.App -c Release -r win-x64 --self-contained true -p:RestoreConfigFile="$PWD/NuGet.Config" -o artifacts/sentinel-app` 이후 `scripts/package.ps1`, `scripts/install-inno.ps1`, `scripts/build-installer.ps1`을 순서대로 실행합니다.
+GitHub Actions의 `Build and test`가 Windows 앱과 Setup을 빌드하고 설치·제거를 검사합니다. 로컬에서는 `dotnet publish desktop/Sentinel.App -c Release -r win-x64 --self-contained true -p:RestoreConfigFile="$PWD/NuGet.Config" -o artifacts/sentinel-app` 이후 `scripts/package.ps1`, `scripts/install-inno.ps1`, `scripts/build-installer.ps1`을 순서대로 실행합니다.
 
-운영자 웹은 Cloudflare Workers와 D1을 사용합니다. 자신의 계정에 처음 배포하는 경우:
+운영자 웹은 Cloudflare Workers에서 실행하며 DB는 Turso 또는 D1을 사용할 수 있습니다. 현재 공개 서버는 Turso를 사용합니다. 자신의 계정에 처음 배포하는 경우:
 
-1. `pnpm exec wrangler login`으로 로그인하고 `pnpm exec wrangler d1 create watchblock`으로 DB를 만듭니다.
-2. `pnpm setup:production`에 실제 HTTPS 주소, DB ID, 본인의 GitHub 사용자명을 입력합니다. 생성된 `wrangler.production.json`은 저장소에 올리지 않습니다.
-3. `pnpm db:production`과 `pnpm run deploy`를 실행합니다.
+1. `pnpm exec wrangler login`으로 로그인합니다. Turso에서 SQLite DB를 만들거나, D1을 쓰려면 `pnpm exec wrangler d1 create sentinel`을 실행합니다.
+2. `pnpm setup:production`에 실제 HTTPS 주소, DB 종류와 주소/ID, 본인의 GitHub 사용자명을 입력합니다. 생성된 `wrangler.production.json`은 저장소에 올리지 않습니다.
+3. Turso는 콘솔에서 `migrations`의 SQL 파일을 번호순으로 실행하고 `pnpm exec wrangler secret put TURSO_AUTH_TOKEN --config wrangler.production.json`으로 DB 전용 읽기·쓰기 토큰을 저장합니다. D1은 `pnpm db:production`을 실행합니다. 이후 `pnpm run deploy`로 배포합니다.
 4. GitHub OAuth App의 홈페이지를 서비스 주소로, callback을 서비스 주소 뒤 `/auth/callback`으로 설정합니다.
 5. 아래 명령의 입력창에 Client ID와 Secret을 각각 저장합니다. 비밀값을 소스에 넣지 않습니다.
 
@@ -19,7 +19,11 @@ pnpm exec wrangler secret put GITHUB_CLIENT_ID --config wrangler.production.json
 pnpm exec wrangler secret put GITHUB_CLIENT_SECRET --config wrangler.production.json
 ```
 
-`wrangler.production.json`의 `DOWNLOAD_URL`에 공개된 GitHub Releases Setup 파일 주소를 넣고 재배포하면 로그인·초대 화면에서 바로 다운로드할 수 있습니다. 배포 후 실제 로그인과 작은 폴더의 검사·제출을 확인하세요. 사용량과 오류는 Cloudflare 대시보드에서 확인합니다.
+`wrangler.production.json`의 `DOWNLOAD_URL`에 공개된 GitHub Releases Setup 파일 주소를 넣고 재배포하면 로그인·초대 화면에서 바로 다운로드할 수 있습니다. 배포 후 실제 로그인과 작은 폴더의 검사·제출을 확인하세요. 웹 사용량은 Cloudflare, DB 사용량은 선택한 DB 서비스에서 확인합니다.
+
+GitHub에서 수동 배포 워크플로를 실행하려면 `production` 환경에 `PRODUCTION_CONFIG`(생성한 설정 파일 내용), `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`를 등록합니다. Turso와 OAuth의 비밀값은 Worker에 저장하며 설정 파일에 넣지 않습니다. Turso를 선택하면 D1 마이그레이션 단계는 건너뜁니다.
+
+DB 이전 시 `MAINTENANCE=true`를 배포해 API와 만료 삭제를 잠시 멈춘 뒤 진행 중인 요청이 끝나기를 기다립니다. D1 SQL 백업을 `.tools/d1-before-turso.sql`, 새 Turso 연결 정보(`url`, `authToken`)를 `.tools/turso-connection.json`에 두고 `node scripts/migrate-turso.mjs import`를 실행합니다. 빈 대상 DB에만 복사하며 모든 행의 체크섬·스키마·인덱스·트리거를 검증합니다. 성공한 뒤 `DB_PROVIDER=turso`, `TURSO_DATABASE_URL`, Worker Secret을 설정하고 `MAINTENANCE=false`로 배포합니다. 실패하면 접수를 재개하지 말고 원인을 확인하세요. 이전 후 새 데이터가 들어간 상태에서 예전 D1로 단순 전환하면 그 데이터가 빠집니다. 백업과 토큰은 Git에 올리지 말고 접근을 제한하세요.
 
 [Cloudflare 배포 설정](https://developers.cloudflare.com/workers/wrangler/configuration/) · [GitHub OAuth App](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app)
 
@@ -42,11 +46,13 @@ pnpm exec wrangler secret put GITHUB_CLIENT_SECRET --config wrangler.production.
 
 ```powershell
 pnpm test
-dotnet run --project desktop/Watchblock.Tests -- .
+dotnet run --project desktop/Sentinel.Tests -- .
 pnpm local
 # 별도 터미널
-dotnet run --project desktop/Watchblock.Smoke -- .
+dotnet run --project desktop/Sentinel.Smoke -- .
 pnpm test:web
 ```
 
 탐지 표본 추가 시 정상 표본·이름 변경·압축 변형·사용하지 않고 보유만 한 경우를 같이 검증합니다. 보호 메모리나 다른 사용자 계정 데이터 수집 코드는 첫 버전 범위에 없습니다.
+
+네이티브 esbuild를 실행할 수 없는 환경에서는 `node scripts/test-portable.mjs`와 `node scripts/build-worker-portable.mjs`로 WebAssembly 기반 테스트·Worker 빌드를 사용할 수 있습니다.

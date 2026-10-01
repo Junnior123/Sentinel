@@ -13,10 +13,14 @@ jobs:
         with:
           version: '11.19.0'
       - run: pnpm install --frozen-lockfile
+      - name: Restore production configuration
+        env:
+          PRODUCTION_CONFIG: ${{ secrets.PRODUCTION_CONFIG }}
+        run: node --input-type=module -e "import {writeFileSync} from 'node:fs'; if(!process.env.PRODUCTION_CONFIG)throw new Error('Set the production environment PRODUCTION_CONFIG secret to wrangler.production.json first'); writeFileSync('wrangler.production.json', process.env.PRODUCTION_CONFIG)"
       - run: pnpm check:production
       - run: pnpm build
       - run: pnpm test
-      - run: pnpm exec wrangler d1 migrations apply watchblock --remote --config wrangler.production.json
+      - run: pnpm db:production
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

@@ -2,7 +2,9 @@ import {z} from 'zod';
 import {readSharedReport} from './sharing';
 import {isReportSection,readSection} from './sections';
 import {chunkSchema,scopeSchema,summarySchema} from '../shared/contracts';
-export interface Env {DB:D1Database; ASSETS:Fetcher; PUBLIC_ORIGIN:string; OWNER_GITHUB_ID:string; SERVICE_NAME:string; ADMISSIONS_OPEN:string; GITHUB_CLIENT_ID:string; GITHUB_CLIENT_SECRET:string; ENVIRONMENT?:string; DOWNLOAD_URL?:string}
+import {connectDatabase,type Database,type DatabaseBindings} from './database';
+export interface Env extends DatabaseBindings {DB:Database; ASSETS:Fetcher; PUBLIC_ORIGIN:string; OWNER_GITHUB_ID:string; SERVICE_NAME:string; ADMISSIONS_OPEN:string; GITHUB_CLIENT_ID:string; GITHUB_CLIENT_SECRET:string; ENVIRONMENT?:string; DOWNLOAD_URL?:string; MAINTENANCE?:string}
+type Bindings=Omit<Env,'DB'>&DatabaseBindings;
 const now=()=>Math.floor(Date.now()/1000), day=86400;
 export const hash=async(s:string)=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s))),x=>x.toString(16).padStart(2,'0')).join('');
 const token=()=>Array.from(crypto.getRandomValues(new Uint8Array(32)),x=>x.toString(16).padStart(2,'0')).join('');
@@ -59,7 +61,7 @@ async function routes(r:Request,e:Env):Promise<Response>{
   const code=url.searchParams.get('code');if(!code)fail(400,'GitHub 승인이 취소되었습니다.');
   const response=await fetch('https://github.com/login/oauth/access_token',{method:'POST',headers:{Accept:'application/json','Content-Type':'application/json'},body:JSON.stringify({client_id:e.GITHUB_CLIENT_ID,client_secret:e.GITHUB_CLIENT_SECRET,code,redirect_uri:e.PUBLIC_ORIGIN+'/auth/callback'}),signal:AbortSignal.timeout(15000)});
   const data:any=await response.json();if(!response.ok||!data.access_token)fail(502,'GitHub 인증에 실패했습니다.');
-  const ur=await fetch('https://api.github.com/user',{headers:{Authorization:`Bearer ${data.access_token}`,'User-Agent':'Watchblock',Accept:'application/vnd.github+json'},signal:AbortSignal.timeout(15000)});const gu:any=await ur.json();if(!ur.ok||!Number.isSafeInteger(gu.id)||typeof gu.login!=='string')fail(502,'GitHub 사용자를 확인할 수 없습니다.');
+  const ur=await fetch('https://api.github.com/user',{headers:{Authorization:`Bearer ${data.access_token}`,'User-Agent':'Sentinel',Accept:'application/vnd.github+json'},signal:AbortSignal.timeout(15000)});const gu:any=await ur.json();if(!ur.ok||!Number.isSafeInteger(gu.id)||typeof gu.login!=='string')fail(502,'GitHub 사용자를 확인할 수 없습니다.');
   const id=String(gu.id);if(id===e.OWNER_GITHUB_ID)await e.DB.prepare("INSERT INTO operators(id,login,role) VALUES(?,?,'owner') ON CONFLICT(id) DO UPDATE SET login=excluded.login,role='owner'").bind(id,gu.login).run();
   const o=await e.DB.prepare('SELECT * FROM operators WHERE id=?').bind(id).first();if(!o)fail(403,'초대된 운영자만 로그인할 수 있습니다.');await e.DB.prepare('UPDATE operators SET login=? WHERE id=?').bind(gu.login,id).run();
   const t=token();await e.DB.prepare('INSERT INTO auth_sessions(token_hash,operator_id,expires) VALUES(?,?,?)').bind(await hash(t),id,now()+day).run();
@@ -86,7 +88,7 @@ async function routes(r:Request,e:Env):Promise<Response>{
   await rate(e,'claim:'+await hash(r.headers.get('cf-connecting-ip')||'local'),15,300);
   const {code,capabilities=[]}=z.object({code:z.string().regex(/^[A-Fa-f0-9 -]{12,16}$/),capabilities:z.array(z.enum(['all-files','hardware-changes'])).max(2).optional()}).strict().parse(await body(r,1024));
   const pending=await e.DB.prepare("SELECT scope FROM scans WHERE code_hash=? AND code_expires>? AND state='created'").bind(await hash(code.replace(/[ -]/g,'').toUpperCase()),now()).first<{scope:string}>();
-  if(pending){const scope=JSON.parse(pending.scope);if(scope.allFiles&&!capabilities.includes('all-files')||scope.hardwareChanges&&!capabilities.includes('hardware-changes'))fail(426,'이 검사에는 Watchblock 0.2 이상 앱이 필요합니다. 코드는 아직 사용되지 않았습니다.')}
+  if(pending){const scope=JSON.parse(pending.scope);if(scope.allFiles&&!capabilities.includes('all-files')||scope.hardwareChanges&&!capabilities.includes('hardware-changes'))fail(426,'이 검사에는 Sentinel 0.2 이상 앱이 필요합니다. 코드는 아직 사용되지 않았습니다.')}
   const t=token();
   const s=await e.DB.prepare("UPDATE scans SET token_hash=?,state='claimed' WHERE code_hash=? AND code_expires>? AND state='created' RETURNING *").bind(await hash(t),await hash(code.replace(/[ -]/g,'').toUpperCase()),now()).first<any>();if(!s)fail(404,'코드가 없거나 만료·사용되었습니다.');const op=await e.DB.prepare('SELECT login FROM operators WHERE id=?').bind(s.owner_id).first<any>();return json({session:publicScan(s),token:t,operator:op.login,service:e.SERVICE_NAME,origin:e.PUBLIC_ORIGIN});
  }
@@ -130,14 +132,19 @@ async function routes(r:Request,e:Env):Promise<Response>{
  if(p.startsWith('/api/')||p.startsWith('/auth/'))fail(404,'요청을 찾을 수 없습니다.');return e.ASSETS.fetch(r);
 }
 export default {
- async fetch(r:Request,e:Env){
+ async fetch(r:Request,e:Bindings){
   let response:Response;
-  try{response=await routes(r,e)}catch(error){if(error instanceof HttpError)response=json({error:error.message},error.status);else if(error instanceof z.ZodError)response=json({error:'요청 형식이 올바르지 않습니다.'},400);else{console.error('Request failed',error instanceof Error?error.name:'Unknown');response=json({error:'서비스에 연결할 수 없습니다. 잠시 후 재시도해 주세요. 운영자는 DB 용량·무료 한도를 확인해 주세요.'},503)}}
+  let connection:ReturnType<typeof connectDatabase>|undefined;
+  try{
+   const path=new URL(r.url).pathname;
+   if(e.MAINTENANCE==='true'&&(path.startsWith('/api/')||path.startsWith('/auth/')))fail(503,'데이터베이스 이전 중입니다. 잠시 후 다시 시도해 주세요.');
+   connection=connectDatabase(e);response=await routes(r,{...e,DB:connection.db});
+  }catch(error){if(error instanceof HttpError)response=json({error:error.message},error.status);else if(error instanceof z.ZodError)response=json({error:'요청 형식이 올바르지 않습니다.'},400);else{console.error('Request failed',error instanceof Error?error.name:'Unknown');response=json({error:'서비스에 연결할 수 없습니다. 잠시 후 재시도해 주세요. 운영자는 DB 용량·무료 한도를 확인해 주세요.'},503)}}finally{connection?.close()}
   const secured=new Response(response.body,response);
   secured.headers.set('X-Frame-Options','DENY');secured.headers.set('X-Content-Type-Options','nosniff');secured.headers.set('Referrer-Policy','no-referrer');secured.headers.set('Cache-Control','no-store');secured.headers.set('X-Robots-Tag','noindex, nofollow');
   if(e.ENVIRONMENT!=='development')secured.headers.set('Strict-Transport-Security','max-age=31536000');
   if(secured.status===429)secured.headers.set('Retry-After','60');
   return secured;
  },
- async scheduled(_event:ScheduledController,e:Env){for(const [table,column] of [['scans','expires'],['auth_sessions','expires'],['oauth_states','expires'],['rate_limits','expires']] as const)await e.DB.prepare(`DELETE FROM ${table} WHERE ${column}<=?`).bind(now()).run();await e.DB.prepare('DELETE FROM audit WHERE created<?').bind(now()-7*day).run()}
+ async scheduled(_event:ScheduledController,e:Bindings){if(e.MAINTENANCE==='true')return;const connection=connectDatabase(e);try{for(const [table,column] of [['scans','expires'],['auth_sessions','expires'],['oauth_states','expires'],['rate_limits','expires']] as const)await connection.db.prepare(`DELETE FROM ${table} WHERE ${column}<=?`).bind(now()).run();await connection.db.prepare('DELETE FROM audit WHERE created<?').bind(now()-7*day).run()}finally{connection.close()}}
 };

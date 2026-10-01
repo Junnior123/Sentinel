@@ -34,7 +34,7 @@ pnpm local
 로컬 웹은 `http://localhost:8787/dev/login`에서 확인할 수 있습니다. 로컬 개발 서버를 외부에 공개하지 마세요.
 
 ```powershell
-dotnet run --project desktop/Watchblock.App -p:RestoreConfigFile="$PWD/NuGet.Config"
+dotnet run --project desktop/Sentinel.App -p:RestoreConfigFile="$PWD/NuGet.Config"
 ```
 
 빌드·배포와 규칙 추가 방법은 [기여 안내](CONTRIBUTING.md)에 정리했습니다.

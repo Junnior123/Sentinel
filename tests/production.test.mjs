@@ -12,3 +12,8 @@ test('installer links are restricted to explicit GitHub release Setup assets',()
  const c=good();c.vars.DOWNLOAD_URL='https://github.com/Junnior123/Sentinel/releases/download/v0.5.0/Sentinel-0.5.0-Setup-x64.exe';assert.deepEqual(validateProduction(c),[]);
  for(const url of ['javascript:alert(1)','https://evil.example/app.exe','https://github.com.evil.test/a/b/releases/download/v1/Sentinel-0.5.0-Setup-x64.exe']){c.vars.DOWNLOAD_URL=url;assert.ok(validateProduction(c).length);}
 });
+test('Turso config validates endpoint and forbids tokens in source config',()=>{
+ const c=good();delete c.d1_databases;c.vars.DB_PROVIDER='turso';c.vars.TURSO_DATABASE_URL='libsql://sentinel-test.turso.io';assert.deepEqual(validateProduction(c),[]);
+ for(const url of ['http://db.turso.io','https://evil.test','https://db.turso.io/path','https://db.turso.io?tls=0']){c.vars.TURSO_DATABASE_URL=url;assert.ok(validateProduction(c).length);}
+ c.vars.TURSO_DATABASE_URL='https://sentinel-test.turso.io';c.vars.TURSO_AUTH_TOKEN='private';assert.ok(validateProduction(c).length);
+});

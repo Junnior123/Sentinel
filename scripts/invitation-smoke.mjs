@@ -12,8 +12,8 @@ try {
  const input=page.getByLabel('플레이어 초대 링크');await input.waitFor();
  const link=await input.inputValue();assert.match(link,/^http:\/\/localhost:8787\/#scan=[A-Fa-f0-9]{12}$/);
  const downloading=page.waitForEvent('download');await page.getByRole('button',{name:'초대 파일 받기',exact:true}).click();
- const file=await downloading;await file.saveAs('artifacts/test.watchblock.json');
- const invite=JSON.parse(await readFile('artifacts/test.watchblock.json','utf8'));
+ const file=await downloading;await file.saveAs('artifacts/test.sentinel.json');
+ const invite=JSON.parse(await readFile('artifacts/test.sentinel.json','utf8'));
  assert.equal(invite.origin,'http://localhost:8787');assert.equal(invite.code,link.split('=')[1]);assert.equal(invite.schemaVersion,1);
  await page.screenshot({path:'artifacts/web-invitation.png',fullPage:true});
  const player=await browser.newPage({viewport:{width:1000,height:850}});

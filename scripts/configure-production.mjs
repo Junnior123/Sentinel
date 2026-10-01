@@ -9,7 +9,10 @@ try {
   if(existsSync(file)&&(await ask('기존 배포 설정을 덮어쓸까요? yes 입력'))!=='yes')throw new Error('기존 설정을 유지했습니다.');
   const name=await ask('Cloudflare Worker 이름','sentinel');
   const origin=await ask('실제 서비스 HTTPS 주소 (예: https://sentinel.계정이름.workers.dev)');
-  const databaseId=await ask('D1 생성 후 표시된 database_id');
+  const provider=await ask('DB 종류 (d1 또는 turso)','turso');
+  if(!['d1','turso'].includes(provider))throw new Error('DB 종류를 확인하세요.');
+  const databaseId=provider==='d1'?await ask('D1 생성 후 표시된 database_id'):'';
+  const tursoUrl=provider==='turso'?await ask('Turso Database URL (libsql://...)'):'';
   const login=await ask('설치자 GitHub 사용자명','Junnior123');
   if(!/^[A-Za-z0-9-]{1,39}$/.test(login))throw new Error('GitHub 사용자명을 확인하세요.');
   let ownerId='';
@@ -24,8 +27,8 @@ try {
   const download=await ask('게시 완료된 GitHub Releases Setup 다운로드 주소 (아직 없으면 Enter)');
   const config=JSON.parse(readFileSync('wrangler.jsonc','utf8'));
   config.name=name;config.workers_dev=true;config.preview_urls=false;
-  config.d1_databases[0].database_id=databaseId;
-  config.vars={PUBLIC_ORIGIN:origin,OWNER_GITHUB_ID:ownerId,SERVICE_NAME:serviceName,ADMISSIONS_OPEN:'true',ENVIRONMENT:'production',DOWNLOAD_URL:download};
+  if(provider==='d1')config.d1_databases[0].database_id=databaseId;else delete config.d1_databases;
+  config.vars={PUBLIC_ORIGIN:origin,OWNER_GITHUB_ID:ownerId,SERVICE_NAME:serviceName,ADMISSIONS_OPEN:'true',ENVIRONMENT:'production',DOWNLOAD_URL:download,DB_PROVIDER:provider,...(tursoUrl?{TURSO_DATABASE_URL:tursoUrl}:{})};
   const errors=validateProduction(config);if(errors.length)throw new Error(errors.join('\n'));
   writeFileSync(file,JSON.stringify(config,null,2)+'\n');
   mkdirSync('artifacts/production',{recursive:true});

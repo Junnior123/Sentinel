@@ -1,5 +1,5 @@
 #ifndef AppVersion
-  #define AppVersion "0.6.0"
+  #define AppVersion "0.6.1"
 #endif
 #define AppSource "..\artifacts\sentinel-app"
 
@@ -40,7 +40,11 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Source: "{#AppSource}\*"; DestDir: "{app}"; Excludes: "*.pdb,docs\*,Sentinel.service.json,Watchblock.service.json"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; Site-specific configuration may be bundled, but an existing operator setting wins.
 Source: "{#AppSource}\Sentinel.service.json"; DestDir: "{app}"; Flags: onlyifdoesntexist skipifsourcedoesntexist uninsneveruninstall
-Source: "{#AppSource}\Watchblock.service.json"; DestDir: "{app}"; Flags: onlyifdoesntexist skipifsourcedoesntexist uninsneveruninstall
+
+[InstallDelete]
+; Retire only known application binaries; preserve operator settings and saved reports.
+Type: files; Name: "{app}\Watchblock.Core.dll"
+Type: files; Name: "{app}\Watchblock.Windows.dll"
 
 [Icons]
 Name: "{group}\Sentinel"; Filename: "{app}\Sentinel.exe"; WorkingDir: "{app}"

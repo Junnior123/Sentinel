@@ -1,6 +1,6 @@
 # Sentinel Windows 설치 패키지
 
-1. `dotnet publish desktop/Watchblock.App -c Release -r win-x64 --self-contained true -p:RestoreConfigFile="$PWD/NuGet.Config" -o artifacts/sentinel-app`
+1. `dotnet publish desktop/Sentinel.App -c Release -r win-x64 --self-contained true -p:RestoreConfigFile="$PWD/NuGet.Config" -o artifacts/sentinel-app`
 2. `./scripts/package.ps1` (런타임 고지와 문서 준비)
 3. `./scripts/install-inno.ps1` (해시 고정 Inno Setup 6.7.3 빌드 도구 설치)
 4. `./scripts/build-installer.ps1`
