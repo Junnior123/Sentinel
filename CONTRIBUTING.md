@@ -55,4 +55,4 @@ pnpm test:web
 
 탐지 표본 추가 시 정상 표본·이름 변경·압축 변형·사용하지 않고 보유만 한 경우를 같이 검증합니다. 보호 메모리나 다른 사용자 계정 데이터 수집 코드는 첫 버전 범위에 없습니다.
 
-네이티브 esbuild를 실행할 수 없는 환경에서는 `node scripts/test-portable.mjs`와 `node scripts/build-worker-portable.mjs`로 WebAssembly 기반 테스트·Worker 빌드를 사용할 수 있습니다.
+네이티브 esbuild를 실행할 수 없는 환경에서는 `node scripts/test-portable.mjs`, `node scripts/build-web-portable.mjs`, `node scripts/build-worker-portable.mjs`로 WebAssembly 기반 테스트와 빌드를 사용할 수 있습니다.
